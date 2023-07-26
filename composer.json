@@ -1,0 +1,27 @@
+{
+    "name": "spacephp/core",
+    "description": "Web tookit",
+    "type": "php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "spacephp",
+            "email": "hqnhatdn@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Illuminate\\": "src/",
+            "MS\\": "ms/"
+        },
+        "files": [
+            "src/helpers/helpers.php",
+            "index.php",
+            "ms/index.php"
+        ]
+    }
+}
