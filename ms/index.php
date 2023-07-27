@@ -7,19 +7,9 @@ use MS\Controllers\Admin\AdminController;
 use MS\Controllers\Admin\CollectionController;
 use MS\Controllers\SiteController;
 use MS\Controllers\BlogController;
-use MS\Controllers\ApiController;
 
 define('ADMIN_VIEW', __DIR__ . '/views');
 define('CACHE_DIR', $_SERVER['DOCUMENT_ROOT'] . '/../cache/');
-
-Route::group(['namespace' => '/restapi/v1'], function () {
-    Route::delete('/{table}/{id}', [ApiController::class, 'destroy']);
-    Route::get('/{table}/{id}', [ApiController::class, 'show']);
-    Route::post('/{table}', [ApiController::class, 'store']);
-    Route::put('/{table}/{id}', [ApiController::class, 'update']);
-
-    Route::get('/{table}', [ApiController::class, 'index']);
-});
 
 Route::group(['namespace' => '/ms'], function () {
     Route::post('/v1/settings',                 [SiteController::class, 'saveSettings']);

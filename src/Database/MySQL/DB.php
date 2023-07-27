@@ -21,25 +21,9 @@ class DB {
     public static function connect() {
         global $mysql;
         if (! isset($mysql)) {
-            $config = DB::getConfig();
-            $mysql = new DB($config['host'], $config['user'], $config['password'], $config['database']);
+            $mysql = new DB(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
         }
         return $mysql;
-    }
-
-    public static function getConfig() {
-        if (defined('DB_HOST')) {
-            return ['host' => DB_HOST, 'user' => DB_USER, 'password' => DB_PASSWORD, 'database' => DB_NAME];
-        }
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/../.env')) {
-            $env = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/../.env');
-            preg_match('/DB_HOST=(.*?)\n/', $env, $host);
-            preg_match('/DB_DATABASE=(.*?)\n/', $env, $database);
-            preg_match('/DB_USERNAME=(.*?)\n/', $env, $user);
-            preg_match('/DB_PASSWORD=(.+?)\n/', $env, $password);
-            return ['host' => trim($host[1]), 'user' => trim($user[1]), 'password' => trim(isset($password[1])?$password[1]:''), 'database' => trim($database[1])];
-        }
-        return ['host' => 'localhost', 'user' => 'root', 'password' => '', 'database' => 'myecom']; 
     }
 
     public static function find($table, $id) {
