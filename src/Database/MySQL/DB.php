@@ -36,13 +36,13 @@ class DB {
             preg_match('/DB_HOST=(.*?)\n/', $env, $host);
             preg_match('/DB_DATABASE=(.*?)\n/', $env, $database);
             preg_match('/DB_USERNAME=(.*?)\n/', $env, $user);
-            preg_match('/DB_PASSWORD=(.*?)\n/', $env, $password);
-            return ['host' => trim($host[1]), 'user' => trim($user[1]), 'password' => trim($password[1]), 'database' => trim($database[1])];
+            preg_match('/DB_PASSWORD=(.+?)\n/', $env, $password);
+            return ['host' => trim($host[1]), 'user' => trim($user[1]), 'password' => trim(isset($password[1])?$password[1]:''), 'database' => trim($database[1])];
         }
         return ['host' => 'localhost', 'user' => 'root', 'password' => '', 'database' => 'myecom']; 
     }
 
-    public static function findById($table, $id) {
+    public static function find($table, $id) {
         $sql = 'SELECT * FROM ' . $table . ' WHERE id=' . $id;
         return DB::selectOne($sql);
     }
@@ -58,7 +58,7 @@ class DB {
         return DB::selectOne($sql);
     }
 
-    public static function find($table, $filter, $limit = 10, $offset = 0) {
+    public static function findAll($table, $filter, $limit = 10, $offset = 0) {
         $sql = 'SELECT * FROM `' . $table . '` WHERE ';
         $values = [];
         foreach ($filter as $key => $value) {
@@ -71,6 +71,10 @@ class DB {
         }
         $sql .= $limit;
         return DB::query($sql);
+    }
+
+    public static function all($table) {
+        return DB::query('SELECT * FROM ' . $table);
     }
 
     public static function create($table, $data) {
@@ -114,7 +118,7 @@ class DB {
         try {
             $mysqli_result = $mysql->mysqli->query($sql);
         } catch (\Exception $e) {
-            return [$mysql->mysqli->error, $sql];
+            return $mysql->mysqli->error . ' ' . $sql;
         }
         if ($mysqli_result === TRUE) {
             return ['rows_affected' => $mysql->mysqli->affected_rows, 'last_id' => $mysql->mysqli->insert_id];

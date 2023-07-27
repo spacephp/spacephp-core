@@ -49,7 +49,7 @@ function _404() {
 
 function _view($name, $args = []) {
     if (! defined('VIEW_FOLDER')) {
-        define('VIEW_FOLDER', Illuminate\Server::get(DOCUMENT_ROOT . '/views'));
+        define('VIEW_FOLDER', Illuminate\Server::get('DOCUMENT_ROOT') . '/../views');
     }
     foreach ($args as $key => $value) {
         ${$key} = $value;
@@ -59,7 +59,7 @@ function _view($name, $args = []) {
 
 function _view_partial($name, $args = []) {
     if (! defined('VIEW_FOLDER')) {
-        define('VIEW_FOLDER', Illuminate\Server::get(DOCUMENT_ROOT . '/views'));
+        define('VIEW_FOLDER', Illuminate\Server::get('DOCUMENT_ROOT') . '/../views');
     }
     foreach ($args as $key => $value) {
         ${$key} = $value;

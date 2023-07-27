@@ -1,4 +1,4 @@
-# LightPHP core
+# SpacePHP core
 ## Modules
 ### MVC
 - Controller

@@ -88,6 +88,10 @@ class Request {
                     return 'PUT';
                 }
                 return 'POST';
+            case 'PUT':
+                return 'PUT';
+            case 'DELETE':
+                return 'DELETE';
         }
         return 'POST';
     }

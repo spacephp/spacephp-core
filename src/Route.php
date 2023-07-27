@@ -2,6 +2,7 @@
 namespace Illuminate;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class Route {
     public static $uri = null;
