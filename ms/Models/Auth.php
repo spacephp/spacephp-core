@@ -1,7 +1,8 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\DB;
+use Illuminate\Database\MongoDB\DB;
+use Illuminate\Http\Request;
 
 class Auth {
     public static function findByEmail($email, $host) {
@@ -11,8 +12,8 @@ class Auth {
     }
 
     public static function currentUser() {
-        if (! __cookie('user')) return false;
-        $user = DB::find('microservices', 'users', ['_id' => new \MongoDB\BSON\ObjectId(__cookie('user')), 'host' => host_name()]);
+        if (! Request::cookie('user')) return false;
+        $user = DB::find('microservices', 'users', ['_id' => new \MongoDB\BSON\ObjectId(Request::cookie('user')), 'host' => host_name()]);
         if (! $user) return false;
         return new User($user);
     }

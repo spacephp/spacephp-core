@@ -77,8 +77,8 @@ class DB {
         return DB::query('SELECT * FROM ' . $table);
     }
 
-    public static function get($table, $options = ['limit' => 10, 'page' => 1, 'orderBy' => 'id', 'orderType' => 'desc']) {
-        $sql = 'SELECT * FROM ' . $table . ' ORDER BY ' . $options['orderBy'] . ' ' . $options['orderType'] . ' LIMIT ' . (($options['page'] - 1)*$options['limit']) . ', ' . $options['limit'];
+    public static function get($table, $options = ['select' => '*', 'limit' => 10, 'page' => 1, 'orderBy' => 'id', 'orderType' => 'desc']) {
+        $sql = 'SELECT ' . $options['select'] . ' FROM ' . $table . ' ORDER BY ' . $options['orderBy'] . ' ' . $options['orderType'] . ' LIMIT ' . (($options['page'] - 1)*$options['limit']) . ', ' . $options['limit'];
         return DB::query($sql);
     }
 

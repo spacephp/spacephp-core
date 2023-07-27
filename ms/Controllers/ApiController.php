@@ -11,7 +11,8 @@ class ApiController {
         $page = Request::get('page', 1);
         $orderBy = Request::get('orderBy', 'id');
         $orderType = Request::get('orderType', 'desc');
-        $result = DB::get($table, ['limit' => $limit, 'page' => $page, 'orderBy' => $orderBy, 'orderType' => $orderType]);
+        $fields = Request::get('fields', '*');
+        $result = DB::get($table, ['select' => $fields, 'limit' => $limit, 'page' => $page, 'orderBy' => $orderBy, 'orderType' => $orderType]);
         //$result = DB::all($table);
         return $result;
     }

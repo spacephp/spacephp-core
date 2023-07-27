@@ -2,7 +2,7 @@
 namespace MS\Controllers;
 
 use MS\Models\Auth;
-use Illuminate\Request;
+use Illuminate\Http\Request;
 use Illuminate\Server;
 
 class AuthController {
