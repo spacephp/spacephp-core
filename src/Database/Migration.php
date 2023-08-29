@@ -2,16 +2,11 @@
 namespace Illuminate\Database;
 
 class Migration {
-    public static function run() {
-        $fields = [
-            'id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
-            'email VARCHAR(64) NOT NULL',
-            'PRIMARY KEY (`id`)',
-            'INDEX `email_index` (`email`)'
-        ];
-        $sql = 'CREATE TABLE `xptracker`.`test` (';
+    public static function run($table, $fields, $engine="InnoDB", $chartset="utf8mb4") {
+        $sql = "CREATE TABLE IF NOT EXISTS $table (";
         $sql .= implode(',', $fields);
-        $sql .= ');';
+        $sql .= ") ENGINE=$engine DEFAULT CHARSET=$chartset";
+        return DB::query($sql);
     }
 
     public static function back() {
