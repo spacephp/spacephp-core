@@ -1,7 +1,7 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\Model;
+use Illuminate\Database\MongoDB\Model;
 
 class Post extends Model {
     public static $fields = ['title', 'slug', 'thumbnail', 'content', 'description', 'categories', 'tags', 'published_on', 'host'];

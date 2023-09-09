@@ -77,6 +77,7 @@ class Route {
     }
 
     protected static function runController($controller) {
+        if (isset($_POST['_method'])) unset($_POST['_method']);
         if (is_array($controller)) {
             $obj = new $controller[0];
             $response = call_user_func_array([$obj, $controller[1]], Route::$params);

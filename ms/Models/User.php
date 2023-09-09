@@ -1,7 +1,7 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\Model;
+use Illuminate\Database\MongoDB\Model;
 
 class User extends Model {
     public static $fields = ['email', 'password', 'host'];

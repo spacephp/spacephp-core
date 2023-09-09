@@ -79,3 +79,142 @@ function admin() {
     $admin = include(Illuminate\Server::get('DOCUMENT_ROOT') . '/../config/admin.php');
     return $admin;
 }
+
+function get_user_ip() {
+    // Get real visitor IP behind CloudFlare network
+    if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+              $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+              $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+    }
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+    $remote  = @$_SERVER['REMOTE_ADDR'];
+
+    if(filter_var( $client, FILTER_VALIDATE_IP ))
+    {
+        $ip = $client;
+    }
+    elseif(filter_var($forward, FILTER_VALIDATE_IP))
+    {
+        $ip = $forward;
+    }
+    else
+    {
+        $ip = $remote;
+    }
+
+    return $ip;
+}
+
+function get_user_agent() {
+    return __server("HTTP_USER_AGENT");
+}
+
+function is_mobile() {
+    if (__get('m') == 1) return true;
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", get_user_agent());
+}
+
+function __cookie($key, $default = '')
+{
+    return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
+}
+
+function __server($key, $default = '')
+{
+    return isset($_SERVER[$key]) ? $_SERVER[$key] : $default;
+}
+
+function __get($key, $default = '') {
+    return isset($_GET[$key]) ? $_GET[$key] : $default;
+}
+
+function __session($key, $default = '') {
+    return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+}
+
+function __post($key, $default = '') {
+    return isset($_POST[$key]) ? $_POST[$key] : $default;
+}
+
+function get_protocol() {
+    if (isset($_SERVER['HTTPS'])
+        && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)
+        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+    ) {
+            return 'https';
+    }
+
+    return 'http';
+}
+
+function host_name() {
+    return __server('HTTP_HOST', '127.0.0.1');
+}
+
+function site_url() {
+    return get_protocol() . '://' . host_name();
+}
+
+function is_json($string) {
+    json_decode($string);
+    return json_last_error() === JSON_ERROR_NONE;
+}
+
+function slugify($text, string $divider = '-')
+{
+    // replace non letter or digits by divider
+    if (! $text) {
+        return false;
+    }
+
+    $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+    if (! $text) {
+        return false;
+    }
+    // transliterate
+    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+    // remove unwanted characters
+    $text = preg_replace('~[^-\w]+~', '', $text);
+    // trim
+    $text = trim($text, $divider);
+    // remove duplicate divider
+    $text = preg_replace('~-+~', $divider, $text);
+    // lowercase
+    $text = strtolower($text);
+    if (! $text) {
+        return false;
+    }
+    return $text;
+}
+
+function random_string($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+function get_string_between($str, $str1, $str2, $deep = 1)
+{
+    $str = explode($str1, $str);
+    if (count($str) == 1) return '';
+    $str = explode($str2, $str[$deep]);
+    return $str[0];
+}
+
+function valid_url($url)
+{
+    return filter_var($url, FILTER_VALIDATE_URL) !== FALSE;
+}
+
+function minimize_css($css){
+    $css = preg_replace('/\/\*((?!\*\/).)*\*\//', '', $css); // negative look ahead
+    $css = preg_replace('/\s{2,}/', ' ', $css);
+    $css = preg_replace('/\s*([:;{}])\s*/', '$1', $css);
+    $css = preg_replace('/;}/', '}', $css);
+    return $css;
+}

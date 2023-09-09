@@ -1,7 +1,7 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\Model;
+use Illuminate\Database\MongoDB\Model;
 
 class Visitor extends Model {
     public static $fields = ['location'];

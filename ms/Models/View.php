@@ -1,7 +1,7 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\Model;
+use Illuminate\Database\MongoDB\Model;
 
 class View extends Model {
     public static $fields = ['visitor_id', 'user_agent', 'host', 'page', 'is_mobile', 'time', 'referrer'];

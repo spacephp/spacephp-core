@@ -8,3 +8,4 @@ MyAdmin::routes();
 if (! defined('IMGPLUZ') || IMGPLUZ) {
     include(__DIR__ . '/imgpluz/route.php');
 }*/
+#include(__DIR__ . '/ms/index.php');

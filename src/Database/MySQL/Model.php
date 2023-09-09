@@ -1,13 +1,65 @@
 <?php
 namespace Illuminate\Database\MySQL;
 
-class Model {
+use Illuminate\Database\Model as ModelInterface;
+
+class Model implements ModelInterface {
     public static $timestamps = true;
 
     function __construct($data = []) {
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
+    }
+
+    public static function create($data) {
+        $class = get_called_class();
+        if ($class::$timestamps) {
+            $data = array_merge($data, ['created_at' => date('Y-m-d H:i:s', time()),'updated_at' => date('Y-m-d H:i:s', time())]);
+        }
+        $result = DB::create($class::$table, $data);
+        if (! isset($result['last_id'])) {
+            return $result;
+        }
+        $result = DB::find($class::$table, $result['last_id']);
+        return new $class($result);
+    }
+
+    public static function read($id) {
+        $class = get_called_class();
+        $result = DB::find($class::$table, $id);
+        if (empty($result)) {
+            return null;
+        }
+        return new $class($result);
+    }
+
+    public static function update($id, $data) {
+        $class = get_called_class();
+        return DB::update($class::$table, $data, $id);
+    }
+
+    public static function delete($id) {
+        $class = get_called_class();
+        $result = DB::delete($class::$table, $id);
+        return $result;
+    }
+
+    public static function findOrCreate($filter, $data) {
+        $class = get_called_class();
+        $result = DB::find($class::$table, $filter);
+        if (empty($result)) {
+            $newData = array_merge($filter, $data);
+            if ($class::$timestamps) {
+                $newData = array_merge($newData, ['created_at' => date('Y-m-d H:i:s', time()),'updated_at' => date('Y-m-d H:i:s', time())]);
+            }
+            $result = DB::create($class::$table, $newData);
+            if (! isset($result['last_id'])) {
+                return $result;
+            }
+            $result = DB::findById($class::$table, $result['last_id']);
+        }
+        return new $class($result);
     }
 
     public static function find($filter, $options = []) {
@@ -32,50 +84,5 @@ class Model {
             $entities[] = new $class($entity);
         } 
         return $entities;
-    }
-
-    public static function create($data) {
-        $class = get_called_class();
-        if ($class::$timestamps) {
-            $data = array_merge($data, ['created_at' => date('Y-m-d H:i:s', time()),'updated_at' => date('Y-m-d H:i:s', time())]);
-        }
-        $result = DB::create($class::$table, $data);
-        if (! isset($result['last_id'])) {
-            return $result;
-        }
-        $result = DB::findById($class::$table, $result['last_id']);
-        return new $class($result);
-    }
-
-    public static function findOrCreate($filter, $data) {
-        $class = get_called_class();
-        $result = DB::find($class::$table, $filter);
-        if (empty($result)) {
-            $newData = array_merge($filter, $data);
-            if ($class::$timestamps) {
-                $newData = array_merge($newData, ['created_at' => date('Y-m-d H:i:s', time()),'updated_at' => date('Y-m-d H:i:s', time())]);
-            }
-            $result = DB::create($class::$table, $newData);
-            if (! isset($result['last_id'])) {
-                return $result;
-            }
-            $result = DB::findById($class::$table, $result['last_id']);
-        }
-        return new $class($result);
-    }
-
-    public static function findById($id) {
-        $class = get_called_class();
-        $result = DB::findById($class::$table, $id);
-        if (empty($result)) {
-            return null;
-        }
-        return new $class($result);
-    }
-
-    public static function destroy($id) {
-        $class = get_called_class();
-        $result = DB::delete($class::$table, $id);
-        return $result;
     }
 }

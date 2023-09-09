@@ -1,7 +1,7 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\Model;
+use Illuminate\Database\MongoDB\Model;
 
 class Site extends Model {
     public static $fields = ['site_url', 'site_name'];

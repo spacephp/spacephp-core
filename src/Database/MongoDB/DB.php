@@ -11,7 +11,7 @@ class DB {
     public static function getClient() {
         if (! DB::$client) {
             if (defined('MONGO_URI')) {
-                $uri = MONGO_URI;
+                $uri = MONGO_URI . '?retryWrites=true&w=majority';
             } else {
                 die('Mongo DB uri not set MONGO_URI');
             }

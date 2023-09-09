@@ -1,7 +1,7 @@
 <?php
 namespace MS\Models;
 
-use Illuminate\MongoDB\Model;
+use Illuminate\Database\MongoDB\Model;
 
 class Page extends Model {
     public static $fields = ['title', 'slug', 'thumbnail', 'content', 'description', 'host'];
