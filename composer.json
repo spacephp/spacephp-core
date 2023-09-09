@@ -15,9 +15,9 @@
     },
     "autoload": {
         "psr-4": {
-          "Illuminate\\": "src/",
-          "Eclipse\\": "eclipse/",
-            "Particle\\" : "particle/"
+            "Illuminate\\": "src/",
+            "Eclipse\\": "eclipse/",
+            "Particle\\" : "particle/",
             "MS\\": "ms/"
         },
       "files": [
