@@ -15,14 +15,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Illuminate\\": "src/",
-            "Eclipse\\": "eclipse/",
-            "Particle\\" : "particle/",
-            "MS\\": "ms/"
+          "Illuminate\\": "src/",
+          "Eclipse\\": "eclipse/",
+          "Particle\\":  "particle/"
         },
       "files": [
         "src/helpers/helpers.php",
-        "ms/index.php",
         "index.php"
       ]
     }

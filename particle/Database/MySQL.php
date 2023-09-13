@@ -1,5 +1,5 @@
 <?php
-namespace Particle;
+namespace Particle\Database;
 
 class MySQL {
 	private $mysqli;
@@ -48,7 +48,7 @@ class MySQL {
         return MySQL::query($sql);
     }
 
-    public static function update($table, $data, $id) {
+    public static function update($table, $id, $data) {
         $sql = 'UPDATE `' . $table . '` SET ';
         $values = [];
         foreach ($data as $key => $value) {

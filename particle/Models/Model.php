@@ -1,8 +1,8 @@
 <?php
-namespace Particle;
+namespace Particle\Models;
 
-use Particle\MySQL;
-use Particle\MongoDB;
+use Particle\Database\MySQL;
+use Particle\Database\MongoDB;
 
 class Model {
 	public static $connection = 'mysql';
@@ -21,7 +21,7 @@ class Model {
 
 	public static function create($data) {
 		$class = get_called_class();
-		$data = Model::checkFillable($data);
+		$data = $class::checkFillable($data);
 		if ($class::$connection == 'mysql') {
 			$response = MySQL::insert($class::$table, $data);
 		} elseif ($class::$connection == 'mongodb') {
@@ -61,34 +61,23 @@ class Model {
 		return $response;
 	}
 
-	public static function select($query) {
-		$class = get_called_class();
-		if ($class::$connection == 'mysql') {
-			$response = MySQL::select($query);
-		} elseif ($class::$connection == 'mongodb') {
-			
-		}
-		return $response;
-	}
-
-	public static function selectOne($query) {
-		$class = get_called_class();
-		if ($class::$connection == 'mysql') {
-			$response = MySQL::selectOne($query);
-		} elseif ($class::$connection == 'mongodb') {
-			
-		}
-		return $response;
-	}
-
-	public static function query($query) {
+	public static function query($query, $singular = false) {
 		$class = get_called_class();
 		if ($class::$connection == 'mysql') {
 			$response = MySQL::query($query);
 		} elseif ($class::$connection == 'mongodb') {
 			
 		}
-		return $response;
+		if (empty($response)) return null;
+		if (! empty($response) && is_array($response[0])) {
+			$class = get_called_class();
+			$items = [];
+			foreach ($response as $item) {
+				$items[] = new $class($item);
+			}
+		}
+		if ($singular) return $items[0];
+		return $items;
 	}
 
 	private static function checkFillable($data) {
@@ -99,5 +88,39 @@ class Model {
 			}
 		}
 		return $data;
+	}
+
+	public static function paginate($limit = 20) {
+		$page = isset($_GET['page'])?$_GET['page']:1;
+		$class = get_called_class();
+		$model = new $class;
+		$where = '1';
+		$model->items = $model::query('SELECT * FROM ' . $model::$table . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
+		if (! $model->items) {
+			$model->items = [];
+		}
+		$count = MySQL::selectOne('SELECT count(*) as total from ' . $model::$table . ' WHERE ' . $where .'');
+		$model->count = $count['total'];
+		$model->limit = $limit;
+		$model->totalPages = intval($model->count/$limit);
+		return $model;
+	}
+
+	public function links() {
+		echo '<ul class="pagination">';
+        echo '<li class="page-item disabled">';
+        echo '<a class="page-link" href="#" aria-label="Previous">';
+        echo '<span aria-hidden="true">«</span>';
+        echo '</a>';
+        echo '</li>';
+        for ($i = 1; $i <= $this->totalPages; $i++) {
+            echo '<li class="page-item"><a class="page-link active" href="?page=' . $i .'">' . $i . '</a></li>';
+        }
+        echo '<li class="page-item">';
+        echo '<a class="page-link" href="#" aria-label="Next">';
+        echo '<span aria-hidden="true">»</span>';
+        echo '</a>';
+        echo '</li>';
+        echo '</ul>';
 	}
 }

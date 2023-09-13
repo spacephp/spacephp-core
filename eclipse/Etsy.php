@@ -40,7 +40,7 @@ class Etsy {
         return $product;
 	}
 
-	private static function get_strings_between($str, $str1, $str2)
+    public static function get_strings_between($str, $str1, $str2)
     {   
         $result = [];
         $str = explode($str1, $str);
