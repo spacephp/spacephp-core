@@ -76,8 +76,9 @@ class Upload {
         } else {
             $crop = imagecrop($src, ['x' => 0, 'y' => ($height - $width / $wph)/2, 'width' => $width, 'height' => $width / $wph]);
         }
-        $thumbnail = imagescale($crop, $ratio[0], -1);
-        imagewebp($thumbnail, $destination);
+        $image_p = imagecreatetruecolor($ratio[0], $ratio[0]);
+        imagecopyresampled($image_p, $crop, 0, 0, 0, 0, $ratio[0], $ratio[0], min($width, $height), min($width, $height));
+        imagewebp($image_p, $destination);
         return $destination;
     }
 

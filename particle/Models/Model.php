@@ -76,6 +76,7 @@ class Model {
 				$items[] = new $class($item);
 			}
 		}
+		if (! isset($items)) return $response;
 		if ($singular) return $items[0];
 		return $items;
 	}
