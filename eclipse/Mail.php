@@ -52,7 +52,7 @@ class Mail {
 		return ['success' => $success, 'message' => $message];
 	}
 
-	public static function orderConfirm($site) {
+	public static function sendTrackingLink($site, $order) {
 		$mail = new Mail(
 			$site->mail_host, 
 			$site->mail_username, 
@@ -61,12 +61,30 @@ class Mail {
 		);
 		$mail->setSender($site->mail_from_address, $site->mail_from_name);
 
+		$mail->receiver_email = $order->getEmail();
+		$mail->receiver_name = $order->getShippingFullName();
+		$mail->subject = 'Your USPS Order Tracking Information';
+		$mail->body = get_ob(function () use ($order, $site) {
+			_view('mail/tracking-link', compact('order', 'site'));
+		});
+		return $mail->send();
+	}
+
+	public static function orderConfirm($site, $order) {
+		$mail = new Mail(
+			$site->mail_host, 
+			$site->mail_username, 
+			$site->mail_password, 
+			$site->mail_port
+		);
+		$mail->setSender($site->mail_from_address, $site->mail_from_name);
+		$cart = $order->cart();
+		$cart->getStatistic();
 		$mail->receiver_email = 'hqnhatdn@gmail.com';
 		$mail->receiver_name = 'Nhat huynh';
-		$mail->subject = 'Thank You for Shopping with Stafaz Store - Order #573643 - Total Amount: $125.00';
-		$var = '$124';
-		$mail->body = get_ob(function () use ($var) {
-			_view('mail/order-confirmation', compact('var'));
+		$mail->subject = 'Thank You for Shopping with ' . $site->site_name . ' - Order #' . $order->getTransactionId() . ' - Total Amount: US$' . $cart->subtotal;
+		$mail->body = get_ob(function () use ($site, $order, $cart) {
+			_view('mail/order-confirmation', compact('site', 'order', 'cart'));
 		});
 		return $mail->send();
 	}
