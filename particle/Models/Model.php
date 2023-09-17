@@ -91,11 +91,20 @@ class Model {
 		return $data;
 	}
 
-	public static function paginate($limit = 20) {
+	public static function paginate($limit = 20, $where = '1') {
 		$page = isset($_GET['page'])?$_GET['page']:1;
 		$class = get_called_class();
 		$model = new $class;
-		$where = '1';
+		if (isset($_GET['s'])) {
+			$where .= ' AND (';
+			foreach ($class::$search as $key => $item) {
+				if ($key != 0) {
+					$where .= ' OR ';
+				}
+				$where .= $item . ' like \'%' . $_GET['s'] . '%\'';
+			}
+			$where .= ')';
+		}
 		$model->items = $model::query('SELECT * FROM ' . $model::$table . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
 		if (! $model->items) {
 			$model->items = [];

@@ -3,7 +3,6 @@ require_once(__DIR__ . '/helper.php');
 ?>
 <html>
     <head>
-        <link rel="stylesheet" href="https://kingtshirt.store/wp-content/plugins/mecom-payment-proxy/assets/css/stripe-payment-form.css?v=3.7.4"/>
     </head>
     <body>
     <form id="payment-form">
