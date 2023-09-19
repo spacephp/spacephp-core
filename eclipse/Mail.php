@@ -80,8 +80,8 @@ class Mail {
 		$mail->setSender($site->mail_from_address, $site->mail_from_name);
 		$cart = $order->cart();
 		$cart->getStatistic();
-		$mail->receiver_email = 'hqnhatdn@gmail.com';
-		$mail->receiver_name = 'Nhat huynh';
+		$mail->receiver_email = $order->getEmail();
+		$mail->receiver_name = $order->getShippingFullName();
 		$mail->subject = 'Thank You for Shopping with ' . $site->site_name . ' - Order #' . $order->getTransactionId() . ' - Total Amount: US$' . $order->getTotal();
 		$mail->body = get_ob(function () use ($site, $order, $cart) {
 			_view('mail/order-confirmation', compact('site', 'order', 'cart'));
