@@ -82,7 +82,7 @@ class Mail {
 		$cart->getStatistic();
 		$mail->receiver_email = 'hqnhatdn@gmail.com';
 		$mail->receiver_name = 'Nhat huynh';
-		$mail->subject = 'Thank You for Shopping with ' . $site->site_name . ' - Order #' . $order->getTransactionId() . ' - Total Amount: US$' . ($cart->getSubTotal() + $cart->calcShippingFee());
+		$mail->subject = 'Thank You for Shopping with ' . $site->site_name . ' - Order #' . $order->getTransactionId() . ' - Total Amount: US$' . $order->getTotal();
 		$mail->body = get_ob(function () use ($site, $order, $cart) {
 			_view('mail/order-confirmation', compact('site', 'order', 'cart'));
 		});
