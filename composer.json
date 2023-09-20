@@ -16,8 +16,7 @@
     "autoload": {
         "psr-4": {
           "Illuminate\\": "src/",
-          "Eclipse\\": "eclipse/",
-          "Particle\\":  "particle/"
+          "Eclipse\\": "eclipse/"
         },
       "files": [
         "src/helpers/helpers.php",

@@ -1,5 +1,5 @@
 <?php
-namespace Particle\Database;
+namespace Illuminate\Database;
 
 class Migration {
     public static function run($table, $fields, $force = false, $engine="InnoDB", $chartset="utf8mb4") {
