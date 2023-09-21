@@ -2,7 +2,6 @@
 ## All class
 - Request
 - Response
-- Server
 - Session
 - Route
 - Config

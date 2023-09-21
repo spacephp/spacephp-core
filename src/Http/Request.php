@@ -1,8 +1,6 @@
 <?php
 namespace Illuminate\Http;
 
-use Illuminate\Server;
-
 class Request {
     function __construct() {
         $this->uri = strtok($_SERVER['REQUEST_URI'], '?');
@@ -61,7 +59,7 @@ class Request {
     }
 
     public static function isXhr() {
-        if (strtolower(Server::get('CONTENT_TYPE')) != 'application/json') return false;
+        if (strtolower(__server('CONTENT_TYPE')) != 'application/json') return false;
         return true;
     }
 
@@ -75,7 +73,7 @@ class Request {
     }
 
     public static function method() {
-        switch (Server::get('REQUEST_METHOD')) {
+        switch (__server('REQUEST_METHOD')) {
             case 'GET':
                 return 'GET';
             case 'POST':
@@ -94,36 +92,6 @@ class Request {
                 return 'DELETE';
         }
         return 'POST';
-    }
-
-    public static function getUserIp() {
-        // Get real visitor IP behind CloudFlare network
-        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-                  $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
-                  $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
-        }
-        $client  = @$_SERVER['HTTP_CLIENT_IP'];
-        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote  = @$_SERVER['REMOTE_ADDR'];
-    
-        if(filter_var( $client, FILTER_VALIDATE_IP ))
-        {
-            $ip = $client;
-        }
-        elseif(filter_var($forward, FILTER_VALIDATE_IP))
-        {
-            $ip = $forward;
-        }
-        else
-        {
-            $ip = $remote;
-        }
-    
-        return $ip;
-    }
-    
-    public static function getUserAgent() {
-        return Server::get("HTTP_USER_AGENT");
     }
 
     public static function isMobile() {
