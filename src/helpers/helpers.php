@@ -2,7 +2,7 @@
 // general helper functions
 function debug_setting($debug = false)
 {
-    if ($debug || Illuminate\Request::get('debug')) {
+    if ($debug || Illuminate\Http\Request::get('debug')) {
         ini_set('display_errors', '1');
         ini_set('display_startup_errors', '1');
         error_reporting(E_ALL);
@@ -67,19 +67,7 @@ function _view_partial($name, $args = []) {
     include(VIEW_FOLDER . '/' . $name . '.php');
 }
 
-function admin_view($name, $args = []) {
-    foreach ($args as $key => $value) {
-        ${$key} = $value;
-    }
-    include(ADMIN_VIEW . '/' . $name . '.php');
-    die();
-}
-
-function admin() {
-    $admin = include(Illuminate\Server::get('DOCUMENT_ROOT') . '/../config/admin.php');
-    return $admin;
-}
-
+// client
 function get_user_ip() {
     // Get real visitor IP behind CloudFlare network
     if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
@@ -137,6 +125,7 @@ function __post($key, $default = '') {
     return isset($_POST[$key]) ? $_POST[$key] : $default;
 }
 
+// server
 function get_protocol() {
     if (isset($_SERVER['HTTPS'])
         && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)
@@ -156,6 +145,7 @@ function site_url() {
     return get_protocol() . '://' . host_name();
 }
 
+// string
 function is_json($string) {
     json_decode($string);
     return json_last_error() === JSON_ERROR_NONE;
