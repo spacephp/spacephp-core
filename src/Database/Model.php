@@ -2,7 +2,6 @@
 namespace Illuminate\Database;
 
 use Illuminate\Database\MySQL\DB;
-use Illuminate\Database\Interface\IModel;
 
 class Model implements IModel{
 	public static $table;
@@ -155,4 +154,12 @@ class Model implements IModel{
 		}
 		return $data;
 	}
+}
+
+interface IModel {
+	public static function read($id);
+	public static function readMultiple($query);
+	public static function create($data, $objectResponse = false);
+	public static function update($id, $data = [], $objectResponse = false);
+	public static function delete($id);
 }
