@@ -2,8 +2,9 @@
 namespace Illuminate\Database;
 
 use Illuminate\Database\MySQL\DB;
+use Illuminate\Database\Interface\IModel;
 
-class Model {
+class Model implements IModel{
 	public static $table;
 	public static $fillable = ['id'];
 	public static $timestamps = true;
@@ -16,29 +17,66 @@ class Model {
         }
     }
 
-	public static function create($data) {
+	public static function create($data, $objectResponse = false) {
 		$class = get_called_class();
-		$data = $class::checkFillable($data);
-		$response = DB::insert($class::getTableName(), $data);
+		if (is_string($data)) {
+			$response = DB::query($data);
+		} else {
+			$data = $class::checkFillable($data);
+			$response = DB::insert($class::getTableName(), $data);
+		}
+		if ($objectResponse) {
+			return $class::read($response['insert_id']);
+		}
 		return $response;
 	}
 
 	public static function read($id) {
 		$class = get_called_class();
-		$response = DB::selectOne('SELECT * FROM ' . $class::getTableName() . ' WHERE id=' . $id);
+		if (is_string($id)) {
+			$response = DB::selectOne($id);
+		} else {
+			$response = DB::selectOne('SELECT * FROM ' . $class::getTableName() . ' WHERE id=' . $id);
+		}
 		return new $class($response);
 	}
 
-	public static function update($id, $data) {
+	public static function readMultiple($query) {
 		$class = get_called_class();
-		$data = $class::checkFillable($data);
-		$response = DB::update($class::getTableName(), $id, $data);
+		$response = DB::query($query);
+		if (empty($response)) return null;
+		if (! empty($response) && is_array($response[0])) {
+			$class = get_called_class();
+			$items = [];
+			foreach ($response as $item) {
+				$items[] = new $class($item);
+			}
+		}
+		if (! isset($items)) return $response;
+		return $items;
+	}
+
+	public static function update($id, $data = [], $objectResponse = false) {
+		if (is_string($id)) {
+			$response = DB::query($id);
+		} else {
+			$class = get_called_class();
+			$data = $class::checkFillable($data);
+			$response = DB::update($class::getTableName(), $id, $data);
+			if ($objectResponse) {
+				return $class::read($id);
+			}
+		}
 		return $response;
 	}
 
 	public static function delete($id) {
-		$class = get_called_class();
-		$response = DB::delete($class::getTableName(), $id);
+		if (is_string($id)) {
+			$response = DB::query($id);
+		} else {
+			$class = get_called_class();
+			$response = DB::delete($class::getTableName(), $id);
+		}
 		return $response;
 	}
 
