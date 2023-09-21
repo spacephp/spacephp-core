@@ -141,7 +141,9 @@ class Model implements IModel{
 	private static function getTableName() {
 		$class = get_called_class();
 		if ($class::$table) return $class::$table;
-		$class::$table = strtolower($class) . 's';
+		$className = explode('\\', $class);
+		$className = array_pop($className);
+		$class::$table = strtolower($className) . 's';
 		return $class::$table;
 	}
 
