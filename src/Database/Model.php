@@ -31,12 +31,9 @@ class Model implements IModel{
 	}
 
 	public static function read($id) {
+		if (! is_numeric($id)) return DB::selectOne($id);
 		$class = get_called_class();
-		if (is_string($id)) {
-			$response = DB::selectOne($id);
-		} else {
-			$response = DB::selectOne('SELECT * FROM ' . $class::getTableName() . ' WHERE id=' . $id);
-		}
+		$response = DB::selectOne('SELECT * FROM ' . $class::getTableName() . ' WHERE id=' . $id);
 		return new $class($response);
 	}
 
@@ -56,27 +53,20 @@ class Model implements IModel{
 	}
 
 	public static function update($id, $data = [], $objectResponse = false) {
-		if (is_string($id)) {
-			$response = DB::query($id);
-		} else {
-			$class = get_called_class();
-			$data = $class::checkFillable($data);
-			$response = DB::update($class::getTableName(), $id, $data);
-			if ($objectResponse) {
-				return $class::read($id);
-			}
+		if (! is_numeric($id)) return DB::query();	
+		$class = get_called_class();
+		$data = $class::checkFillable($data);
+		$response = DB::update($class::getTableName(), $id, $data);
+		if ($objectResponse) {
+			return $class::read($id);
 		}
 		return $response;
 	}
 
 	public static function delete($id) {
-		if (is_string($id)) {
-			$response = DB::query($id);
-		} else {
-			$class = get_called_class();
-			$response = DB::delete($class::getTableName(), $id);
-		}
-		return $response;
+		if (! is_numeric($id)) return DB::query($id);
+		$class = get_called_class();
+		return DB::delete($class::getTableName(), $id);
 	}
 
 	public static function query($query, $singular = false) {
