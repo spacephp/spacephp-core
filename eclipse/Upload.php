@@ -91,7 +91,7 @@ class Upload {
         die();
     }
 
-    public static function save($file, $content, $mode = 0777) {
+    public static function saveFile($file, $content, $mode = 0777) {
         $dir = dirname($file);
         if (!is_dir($dir)) {
             mkdir($dir, $mode, true);
@@ -99,7 +99,7 @@ class Upload {
         file_put_contents($file, $content);
     }
     
-    public static function get($file, $default = '') {
+    public static function getFile($file, $default = '') {
         $content = @file_get_contents($file);
         if (! $content) {
             return $default;
