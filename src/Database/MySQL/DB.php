@@ -100,7 +100,7 @@ abstract class MySQL {
     protected static function formatValue($value) {
         if ($value === null) return 'null';
         if (is_numeric($value)) return $value;
-        if (is_array($value)) return '"' . str_replace('"', '\"', json_encode($value)) . '"';
+        if (is_array($value)) return '"' . str_replace('"', '\"', json_encode($value, JSON_PRETTY_PRINT)) . '"';
         return '"' . str_replace('"', '\"', $value) . '"';
     }
 }
