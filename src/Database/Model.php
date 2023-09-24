@@ -31,8 +31,8 @@ class Model implements IModel{
 	}
 
 	public static function read($id) {
-		if (! is_numeric($id)) return DB::selectOne($id);
 		$class = get_called_class();
+		if (! is_numeric($id)) return new $class(DB::selectOne($id));
 		$response = DB::selectOne('SELECT * FROM ' . $class::getTableName() . ' WHERE id=' . $id);
 		return new $class($response);
 	}
@@ -85,8 +85,11 @@ class Model implements IModel{
 		return $items;
 	}
 
-	public static function paginate($limit = 20, $where = '1') {
+	public static function paginate($options, $limit = 20) {
+		$select = isset($options['select'])?$options['select']:'*';
+		$where = isset($options['where'])?$options['where']:'1';
 		$page = isset($_GET['page'])?$_GET['page']:1;
+		$search = isset($_GET['search'])?$_GET['search']:false;
 		$class = get_called_class();
 		$model = new $class;
 		if (isset($_GET['s'])) {
@@ -99,11 +102,11 @@ class Model implements IModel{
 			}
 			$where .= ')';
 		}
-		$model->items = $model::query('SELECT * FROM ' . $model::getTableName() . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
+		$model->items = $model::query('SELECT ' . $select . ' FROM ' . $model::getTableName() . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
 		if (! $model->items) {
 			$model->items = [];
 		}
-		$count = DB::selectOne('SELECT count(*) as total from ' . $model::getTableName() . ' WHERE ' . $where .'');
+		$count = DB::selectOne('SELECT count(*) as total from ' . $model::getTableName() . ' WHERE ' . $where .'', true);
 		$model->count = $count['total'];
 		$model->limit = $limit;
 		$model->totalPages = intval($model->count/$limit);
@@ -117,8 +120,8 @@ class Model implements IModel{
         echo '<span aria-hidden="true">«</span>';
         echo '</a>';
         echo '</li>';
-        for ($i = 1; $i <= $this->totalPages; $i++) {
-            echo '<li class="page-item"><a class="page-link active" href="?page=' . $i .'">' . $i . '</a></li>';
+        for ($i = 0; $i <= $this->totalPages; $i++) {
+            echo '<li class="page-item"><a class="page-link active" href="?page=' . ($i + 1) .'">' . ($i + 1) . '</a></li>';
         }
         echo '<li class="page-item">';
         echo '<a class="page-link" href="#" aria-label="Next">';
@@ -154,4 +157,6 @@ interface IModel {
 	public static function create($data, $objectResponse = false);
 	public static function update($id, $data = [], $objectResponse = false);
 	public static function delete($id);
+	public static function paginate($options, $limit = 20);
+	public static function links();
 }
