@@ -158,5 +158,5 @@ interface IModel {
 	public static function update($id, $data = [], $objectResponse = false);
 	public static function delete($id);
 	public static function paginate($options, $limit = 20);
-	public static function links();
+	public function links();
 }
