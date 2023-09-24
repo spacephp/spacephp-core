@@ -18,8 +18,12 @@ class Model implements IModel{
 
 	public static function read($id) {
 		$class = get_called_class();
-		if (! is_numeric($id)) return new $class(DB::selectOne($id));
-		$response = DB::selectOne('SELECT * FROM ' . $class::$talbe . ' WHERE id=' . $id);
+		if (! is_numeric($id)) {
+			$response = DB::selectOne($id);
+		} else {
+			$response = DB::selectOne('SELECT * FROM ' . $class::$table . ' WHERE id=' . $id);
+		}
+		if (empty($response)) return null;
 		return new $class($response);
 	}
 
@@ -44,7 +48,7 @@ class Model implements IModel{
 			$response = DB::query($data);
 		} else {
 			$data = $class::checkFillable($data);
-			$response = DB::insert($class::$talbe, $data);
+			$response = DB::insert($class::$table, $data);
 		}
 		if ($objResponse) {
 			return $class::read($response['insert_id']);
@@ -66,7 +70,7 @@ class Model implements IModel{
 	public static function delete($id) {
 		if (! is_numeric($id)) return DB::query($id);
 		$class = get_called_class();
-		return DB::delete($class::getTableName(), $id);
+		return DB::delete($class::$table, $id);
 	}
 
 	public static function query($query) {
@@ -91,7 +95,7 @@ class Model implements IModel{
 		$search = isset($_GET['search'])?$_GET['search']:false;
 		$class = get_called_class();
 		$model = new $class;
-		if (isset($_GET['s'])) {
+		if ($search && isset($_GET['s'])) {
 			$where .= ' AND (';
 			foreach ($class::$search as $key => $item) {
 				if ($key != 0) {
@@ -101,11 +105,11 @@ class Model implements IModel{
 			}
 			$where .= ')';
 		}
-		$model->items = $model::query('SELECT ' . $select . ' FROM ' . $model::getTableName() . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
+		$model->items = $model::query('SELECT ' . $select . ' FROM ' . $model::$table . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
 		if (! $model->items) {
 			$model->items = [];
 		}
-		$count = DB::selectOne('SELECT count(*) as total from ' . $model::getTableName() . ' WHERE ' . $where .'', true);
+		$count = DB::selectOne('SELECT count(*) as total from ' . $model::$table . ' WHERE ' . $where .'', true);
 		$model->count = $count['total'];
 		$model->limit = $limit;
 		$model->totalPages = intval($model->count/$limit);
@@ -128,15 +132,6 @@ class Model implements IModel{
         echo '</a>';
         echo '</li>';
         echo '</ul>';
-	}
-
-	private static function getTableName() {
-		$class = get_called_class();
-		if ($class::$table) return $class::$table;
-		$className = explode('\\', $class);
-		$className = array_pop($className);
-		$class::$table = strtolower($className) . 's';
-		return $class::$table;
 	}
 
 	private static function checkFillable($data) {
