@@ -16,30 +16,16 @@ class Model implements IModel{
         }
     }
 
-	public static function create($data, $objectResponse = false) {
-		$class = get_called_class();
-		if (is_string($data)) {
-			$response = DB::query($data);
-		} else {
-			$data = $class::checkFillable($data);
-			$response = DB::insert($class::getTableName(), $data);
-		}
-		if ($objectResponse) {
-			return $class::read($response['insert_id']);
-		}
-		return $response;
-	}
-
 	public static function read($id) {
 		$class = get_called_class();
 		if (! is_numeric($id)) return new $class(DB::selectOne($id));
-		$response = DB::selectOne('SELECT * FROM ' . $class::getTableName() . ' WHERE id=' . $id);
+		$response = DB::selectOne('SELECT * FROM ' . $class::$talbe . ' WHERE id=' . $id);
 		return new $class($response);
 	}
 
 	public static function readMultiple($query) {
 		$class = get_called_class();
-		$response = DB::query($query);
+		$response = DB::select($query);
 		if (empty($response)) return null;
 		if (! empty($response) && is_array($response[0])) {
 			$class = get_called_class();
@@ -52,12 +38,26 @@ class Model implements IModel{
 		return $items;
 	}
 
-	public static function update($id, $data = [], $objectResponse = false) {
-		if (! is_numeric($id)) return DB::query();	
+	public static function create($data, $objResponse = false) {
+		$class = get_called_class();
+		if (is_string($data)) {
+			$response = DB::query($data);
+		} else {
+			$data = $class::checkFillable($data);
+			$response = DB::insert($class::$talbe, $data);
+		}
+		if ($objResponse) {
+			return $class::read($response['insert_id']);
+		}
+		return $response;
+	}
+
+	public static function update($id, $data = [], $objResponse = false) {
+		if (! is_numeric($id)) return DB::query($id);	
 		$class = get_called_class();
 		$data = $class::checkFillable($data);
-		$response = DB::update($class::getTableName(), $id, $data);
-		if ($objectResponse) {
+		$response = DB::update($class::$table, $id, $data);
+		if ($objResponse) {
 			return $class::read($id);
 		}
 		return $response;
@@ -69,7 +69,7 @@ class Model implements IModel{
 		return DB::delete($class::getTableName(), $id);
 	}
 
-	public static function query($query, $singular = false) {
+	public static function query($query) {
 		$class = get_called_class();
 		$response = DB::query($query);
 		if (empty($response)) return null;
@@ -81,7 +81,6 @@ class Model implements IModel{
 			}
 		}
 		if (! isset($items)) return $response;
-		if ($singular) return $items[0];
 		return $items;
 	}
 

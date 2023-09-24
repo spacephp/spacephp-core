@@ -1,136 +1,24 @@
 # SpacePHP core
 ## All class
-- Request
-- Response
-- Session
-- Route
-- Config
-- Database
-- Model
-- Controller
-- function view
 - App
-- helpers function
-## Modules
-### MVC
-- Controller
-- Model
-- Views
-### Database
-- MySQL
-- MongoDB
-### Http
+- Route
 - Request
 - Response
-- Session
-- Cookie
-### Helpers
-- CUrl
-- File
-- Str
-- Arr
-- NCrypt
-- helpers
-### Authentication
-- User
-### Route
-- api
-- web
-### Cache
-
-### Config
-- .env
-- /config
-### Microservices
-- Admin
-- Blog
-- Ecommerce
-- Payment
-
-# CUrl
-CUrl class for http request
-
-### Get Requests
-```
-use Illuminate\CUrl;
-
-$curl = new CUrl();
-$response = $curl->connect('GET', 'http://example.com');
-
-echo $response;
-```
-
-### Post Request
-```
-use Illuminate\CUrl;
-
-$curl = new CUrl();
-$curl->json_data();
-$curl->json();
-$curl->setHeader('Authorization: aa123acfbd5efc');
-$data = [
-    'name' => 'Nhat'
-];
-$response = $curl->connect('POST', 'http://nhathuynh.com/api/v1/test', $data);
-echo $response;
-```
-
-### NCrypt
-```
-use Illuminate\NCrypt;
-
-$encryptTxt = NCrypt::encrypt('hello world', 'secret_key_a1c32efbc');
-echo NCrypt::decrypt($encryptTxt, 'secret_key_a1c32efbc');
-```
-
-# Firebase
-```
-use Illuminate\firebase\Firebase;
-use Illuminate\firebase\FireStore;
-
-$fb = new Firebase(['apiKey' => 'AIzaSyDBLyiGjroIhQndhe0T3iac39GalX-z9Lo', 'projectId' => 'myecom-f0a26']);
-$firestore = new FireStore($fb);
-$response = $firestore->getCollection('users', '123'));
-```
-
-### Current version
-- v1.1.0
+- Database
+- Migration
+- Model
+- helpers function
 ### Push tags
 ```
 git tag -a v1.0.0 -m "v1.0.0"
 git push --tags
 ```
 
-# Larva
-### Description
-A MVC PHP web development
-
-### Response
-```
-use Illuminate\web\Response;
-
-Response::json(['data' => '', 'message' => 'Success'], 200);
-```
-
-### Request
-```
-use Illuminate\web\Request;
-
-$data = Request::json($required = ['id']);
-$id = Request::get('id');
-```
-
-## Imgpluz
-### Up ảnh
-Up ảnh vào thư mục {ROOT_DOCUMENT}/uploads/{path}
-
-File ảnh lớn hơn 300px sẽ generate vào {ROOT_DOCUMENT}/uploads/generate/{generatePath}
-
-File ảnh nhỏ hơn hoặc bằng 300px sẽ generate vào {PUBLIC_DOCUMENT}/uploads/img/{generatePath}
-
-### Push tags
-```
-git tag -a v1.0.0 -m "v1.0.0"
-git push --tags
-```
-
+# Link fail
+https://www.etsy.com/listing/1512770548/rookie-of-the-year-shirt-daddy-of-the
+https://www.etsy.com/listing/1464687203/mad-love-for-my-mama-baby-one-piece
+https://www.etsy.com/listing/1502881388/dads-my-guy-baby-one-piece-retro-daddys
+https://www.etsy.com/listing/1494913011/stafaz-halfway-to-one-baby-one-piece
+https://www.etsy.com/listing/1412623032/lake-tahoe-shirt-hiking-shirt-lake-tahoe
+https://www.etsy.com/listing/1489567037/besties-2023-baby-one-piece-retro
+https://www.etsy.com/listing/1508712487/my-rolls-are-homemade-baby-one-piece-1st
