@@ -37,6 +37,9 @@ class Mail {
 		// Add cc or bcc   
 		// $mail->addCC('email@mail.com');  
 		// $mail->addBCC('user@mail.com');  
+		if (isset($this->bcc)) {
+			$mail->addBCC($this->bcc); 
+		}
 		$mail->isHTML(true);
 		$mail->Subject = $this->subject;
 		$mail->Body    = $this->body;
@@ -50,6 +53,10 @@ class Mail {
 		}
 		$mail->smtpClose();
 		return ['success' => $success, 'message' => $message];
+	}
+
+	public function addBcc($mail) {
+		$this->bcc = $mail;
 	}
 
 	public static function sendTrackingLink($site, $order) {
@@ -86,6 +93,7 @@ class Mail {
 		$mail->body = get_ob(function () use ($site, $order, $cart) {
 			_view('mail/order-confirmation', compact('site', 'order', 'cart'));
 		});
+		$mail->addBcc("nhathq.dn@gmail.com");
 		return $mail->send();
 	}
 }
