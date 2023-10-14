@@ -93,7 +93,7 @@ class Model implements IModel{
 		$where = isset($options['where'])?$options['where']:'1';
 		$page = isset($_GET['page'])?$_GET['page']:1;
 		$search = isset($_GET['s'])?$_GET['s']:false;
-		$order = isset($options['order'])?$option['order']:['field' => 'id', 'type' => 'desc'];
+		$order = isset($options['order'])?$options['order']:['field' => 'id', 'type' => 'desc'];
 		$class = get_called_class();
 		$model = new $class;
 		if ($search) {
