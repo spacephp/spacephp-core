@@ -92,10 +92,10 @@ class Model implements IModel{
 		$select = isset($options['select'])?$options['select']:'*';
 		$where = isset($options['where'])?$options['where']:'1';
 		$page = isset($_GET['page'])?$_GET['page']:1;
-		$search = isset($_GET['search'])?$_GET['search']:false;
+		$search = isset($_GET['s'])?$_GET['s']:false;
 		$class = get_called_class();
 		$model = new $class;
-		if ($search && isset($_GET['s'])) {
+		if ($search) {
 			$where .= ' AND (';
 			foreach ($class::$search as $key => $item) {
 				if ($key != 0) {
