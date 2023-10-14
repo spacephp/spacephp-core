@@ -93,6 +93,7 @@ class Model implements IModel{
 		$where = isset($options['where'])?$options['where']:'1';
 		$page = isset($_GET['page'])?$_GET['page']:1;
 		$search = isset($_GET['s'])?$_GET['s']:false;
+		$order = isset($options['order'])?$option['order']:['field' => 'id', 'type' => 'desc'];
 		$class = get_called_class();
 		$model = new $class;
 		if ($search) {
@@ -105,7 +106,7 @@ class Model implements IModel{
 			}
 			$where .= ')';
 		}
-		$model->items = $model::query('SELECT ' . $select . ' FROM ' . $model::$table . ' WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
+		$model->items = $model::query('SELECT ' . $select . ' FROM ' . $model::$table . ' WHERE ' . $where . ' ORDER BY ' . $order['field'] . ' ' . $order['type'] . ' LIMIT ' . $limit . ' OFFSET ' . (($page - 1) * $limit));
 		if (! $model->items) {
 			$model->items = [];
 		}
