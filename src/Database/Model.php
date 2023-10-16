@@ -10,7 +10,6 @@ class Model implements IModel{
 	public static $softDelete = false;
 
     function __construct($data = []) {
-		$data = $this->checkFillable($data);
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
