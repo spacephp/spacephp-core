@@ -58,15 +58,16 @@ require_once(__DIR__ . '/helper.php');
                 type: 'card',
                 card: window.cardElement,
                 billing_details:  {
-                    name: formData.first_name + ' ' + formData.last_name,
+                    name: formData.shipping.first_name + ' ' + formData.shipping.last_name,
                     email: formData.email,
                     address: {
-                        city: formData.city,
-                        country: formData.country,
-                        line1: formData.address_1,
-                        postal_code: formData.postcode
+                        city: formData.shipping.city,
+                        country: formData.shipping.country,
+                        line1: formData.shipping.address_1,
+                        line2: formData.shipping.address_2,
+                        state: formData.shipping.state,
+                        postal_code: formData.shipping.postcode
                     },
-                    phone: formData.phone,
                 }
             }).then(function (e) {
                 if (e.paymentMethod && e.paymentMethod.id) {
