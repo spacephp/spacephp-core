@@ -8,11 +8,11 @@ if (isset($_GET['stripe-make-payment'])) {
     include(__DIR__ . '/stripe-make-payment.php');
     die();
 }
-if (isset($_GET['stripe-get-payment-form'])) {
+if (isset($_GET['stripe'])) {
     include(__DIR__ . '/stripe-payment-form.php');
     die();
 }
-if (isset($_GET['paypal_checkout'])) {
+if (isset($_GET['paypal'])) {
     include(__DIR__ . '/paypal-checkout.php');
     die();
 }
