@@ -8,11 +8,16 @@ class Model implements IModel{
 	public static $fillable = ['id'];
 	public static $timestamps = true;
 	public static $softDelete = false;
+	private array $properties = [];
 
     function __construct($data = []) {
         foreach ($data as $key => $value) {
-            $this->{$key} = $value;
+            $this->__set($key, $value);
         }
+    }
+
+	public function __set(string $name, mixed $value): void {
+        $this->properties[$name] = $value;
     }
 
 	public static function read($id) {

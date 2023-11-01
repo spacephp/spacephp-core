@@ -86,7 +86,7 @@ class CUrl
         $this->userAgent();
         $this->detectSSL($url);
         if ($data) {
-            $this->setHeader('Content-Length: ' . json_encode($data));
+            $this->setHeader('Content-Length: ' . strlen(json_encode($data)));
         }
         $this->setHeaders();
         $this->setOptions();
