@@ -8,16 +8,11 @@ class Model implements IModel{
 	public static $fillable = ['id'];
 	public static $timestamps = true;
 	public static $softDelete = false;
-	private array $properties = [];
 
     function __construct($data = []) {
         foreach ($data as $key => $value) {
-            $this->__set($key, $value);
+            $this->{$key} = $value;
         }
-    }
-
-	public function __set(string $name, mixed $value): void {
-        $this->properties[$name] = $value;
     }
 
 	public static function read($id) {
@@ -125,7 +120,7 @@ class Model implements IModel{
 		echo '<ul class="pagination">';
         echo '<li class="page-item disabled">';
         echo '<a class="page-link" href="#" aria-label="Previous">';
-        echo '<span aria-hidden="true">Â«</span>';
+        echo '<span aria-hidden="true">«</span>';
         echo '</a>';
         echo '</li>';
         for ($i = 0; $i <= $this->totalPages; $i++) {
@@ -133,7 +128,7 @@ class Model implements IModel{
         }
         echo '<li class="page-item">';
         echo '<a class="page-link" href="#" aria-label="Next">';
-        echo '<span aria-hidden="true">Â»</span>';
+        echo '<span aria-hidden="true">»</span>';
         echo '</a>';
         echo '</li>';
         echo '</ul>';
