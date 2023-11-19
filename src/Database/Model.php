@@ -118,17 +118,19 @@ class Model implements IModel{
 
 	public function links() {
 		$page = isset($_GET['page'])?$_GET['page']:1;
+		$params           = array_merge( $_GET, array( 'test' => 'testvalue' ) );
+		$new_query_string = http_build_query( $params );
 		echo '<ul class="pagination">';
         echo '<li class="page-item ' . ($page == 1 ? 'disabled': '') .'">';
-        echo '<a class="page-link" href="?page=' . ($page - 1) . '" aria-label="Previous">';
+        echo '<a class="page-link" href="?' . http_build_query(array_merge($_GET, ['page' => $page - 1])) . '" aria-label="Previous">';
         echo '<span aria-hidden="true"><</span>';
         echo '</a>';
         echo '</li>';
         for ($i = 0; $i <= $this->totalPages; $i++) {
-            echo '<li class="page-item"><a class="page-link ' .($page == $i + 1 ? 'active': '') . '" href="?page=' . ($i + 1) .'">' . ($i + 1) . '</a></li>';
+            echo '<li class="page-item"><a class="page-link ' .($page == $i + 1 ? 'active': '') . '" href="?' . http_build_query(array_merge($_GET, ['page' => $i + 1])) . '">' . ($i + 1) . '</a></li>';
         }
         echo '<li class="page-item ' . ($page == $this->totalPages + 1 ? 'disabled': '') .'">';
-        echo '<a class="page-link" href="?page=' . ($page + 1) . '" aria-label="Next">';
+        echo '<a class="page-link" href="?' . http_build_query(array_merge($_GET, ['page' => $page + 1])) . '" aria-label="Next">';
         echo '<span aria-hidden="true">></span>';
         echo '</a>';
         echo '</li>';
