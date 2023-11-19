@@ -117,18 +117,19 @@ class Model implements IModel{
 	}
 
 	public function links() {
+		$page = isset($_GET['page'])?$_GET['page']:1;
 		echo '<ul class="pagination">';
-        echo '<li class="page-item disabled">';
-        echo '<a class="page-link" href="#" aria-label="Previous">';
-        echo '<span aria-hidden="true">«</span>';
+        echo '<li class="page-item ' . ($page == 1 ? 'disabled': '') .'">';
+        echo '<a class="page-link" href="?page=' . ($page - 1) . '" aria-label="Previous">';
+        echo '<span aria-hidden="true"><</span>';
         echo '</a>';
         echo '</li>';
         for ($i = 0; $i <= $this->totalPages; $i++) {
-            echo '<li class="page-item"><a class="page-link active" href="?page=' . ($i + 1) .'">' . ($i + 1) . '</a></li>';
+            echo '<li class="page-item"><a class="page-link ' .($page == $i + 1 ? 'active': '') . '" href="?page=' . ($i + 1) .'">' . ($i + 1) . '</a></li>';
         }
-        echo '<li class="page-item">';
-        echo '<a class="page-link" href="#" aria-label="Next">';
-        echo '<span aria-hidden="true">»</span>';
+        echo '<li class="page-item ' . ($page == $this->totalPages ? 'disabled': '') .'">';
+        echo '<a class="page-link" href="?page=' . ($page + 1) . '" aria-label="Next">';
+        echo '<span aria-hidden="true">></span>';
         echo '</a>';
         echo '</li>';
         echo '</ul>';
