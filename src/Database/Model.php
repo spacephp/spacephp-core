@@ -127,7 +127,7 @@ class Model implements IModel{
         for ($i = 0; $i <= $this->totalPages; $i++) {
             echo '<li class="page-item"><a class="page-link ' .($page == $i + 1 ? 'active': '') . '" href="?page=' . ($i + 1) .'">' . ($i + 1) . '</a></li>';
         }
-        echo '<li class="page-item ' . ($page == $this->totalPages ? 'disabled': '') .'">';
+        echo '<li class="page-item ' . ($page == $this->totalPages + 1 ? 'disabled': '') .'">';
         echo '<a class="page-link" href="?page=' . ($page + 1) . '" aria-label="Next">';
         echo '<span aria-hidden="true">></span>';
         echo '</a>';
