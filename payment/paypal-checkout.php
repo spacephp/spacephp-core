@@ -64,7 +64,7 @@
                     user_action: 'CONTINUE',
                 }
                 
-                if (!window.checkoutFormInfo.shipping.country || window.checkoutFormInfo.country.length === 0
+                if (!window.checkoutFormInfo.shipping.country || window.checkoutFormInfo.shipping.country.length === 0
                     || !window.checkoutFormInfo.shipping.city || window.checkoutFormInfo.shipping.city.length === 0
                 ) {
                     applicationContext.shipping_preference = "NO_SHIPPING"
