@@ -32,8 +32,8 @@
                     email_address: window.checkoutFormInfo.email
                 }
                 if (requireShipping) {
-                    payerData.name = {surname: window.checkoutFormInfo.last_name,
-                        given_name: window.checkoutFormInfo.first_name}
+                    payerData.name = {surname: window.checkoutFormInfo.shipping.last_name,
+                        given_name: window.checkoutFormInfo.shipping.first_name}
                 }
                 var purchaseUnits = [{
                     amount: {
@@ -49,13 +49,13 @@
                 if (requireShipping) {
                     purchaseUnits.shipping = {
                         name: {
-                        "full_name": window.checkoutFormInfo.first_name + " " + window.checkoutFormInfo.last_name
+                        "full_name": window.checkoutFormInfo.shipping.first_name + " " + window.checkoutFormInfo.shipping.last_name
                         },
                         address: {
-                        "address_line_1": window.checkoutFormInfo.address_1,
-                        "admin_area_2": window.checkoutFormInfo.city,
-                        "postal_code": window.checkoutFormInfo.postcode,
-                        "country_code": window.checkoutFormInfo.country
+                        "address_line_1": window.checkoutFormInfo.shipping.address_1,
+                        "admin_area_2": window.checkoutFormInfo.shipping.city,
+                        "postal_code": window.checkoutFormInfo.shipping.postcode,
+                        "country_code": window.checkoutFormInfo.shipping.country
                         }
                     }
                 }
@@ -64,38 +64,38 @@
                     user_action: 'CONTINUE',
                 }
                 
-                if (!window.checkoutFormInfo.country || window.checkoutFormInfo.country.length === 0
-                    || !window.checkoutFormInfo.city || window.checkoutFormInfo.city.length === 0
+                if (!window.checkoutFormInfo.shipping.country || window.checkoutFormInfo.country.length === 0
+                    || !window.checkoutFormInfo.shipping.city || window.checkoutFormInfo.shipping.city.length === 0
                 ) {
                     applicationContext.shipping_preference = "NO_SHIPPING"
                 } else {
                     payerData.address = {
-                        country_code: window.checkoutFormInfo.country,
-                        address_line_1: window.checkoutFormInfo.address_1,
+                        country_code: window.checkoutFormInfo.shipping.country,
+                        address_line_1: window.checkoutFormInfo.shipping.address_1,
                         address_line_2: "",
-                        admin_area_1: window.checkoutFormInfo.state,
-                        admin_area_2: window.checkoutFormInfo.city,
-                        postal_code: window.checkoutFormInfo.postcode,
+                        admin_area_1: window.checkoutFormInfo.shipping.state,
+                        admin_area_2: window.checkoutFormInfo.shipping.city,
+                        postal_code: window.checkoutFormInfo.shipping.postcode,
                     }
                     purchaseUnits[0].shipping = {
                         name: {
-                            full_name: window.checkoutFormInfo.first_name + ' ' + window.checkoutFormInfo.last_name
+                            full_name: window.checkoutFormInfo.shipping.first_name + ' ' + window.checkoutFormInfo.shipping.last_name
                         },
                         address: {
-                            country_code: window.checkoutFormInfo.country,
-                            address_line_1: window.checkoutFormInfo.address_1,
+                            country_code: window.checkoutFormInfo.shipping.country,
+                            address_line_1: window.checkoutFormInfo.shipping.address_1,
                             address_line_2: "",
-                            admin_area_1: window.checkoutFormInfo.state,
-                            admin_area_2: window.checkoutFormInfo.city,
-                            postal_code: window.checkoutFormInfo.postcode,
+                            admin_area_1: window.checkoutFormInfo.shipping.state,
+                            admin_area_2: window.checkoutFormInfo.shipping.city,
+                            postal_code: window.checkoutFormInfo.shipping.postcode,
                         }
                     }
                 }
-                if (window.checkoutFormInfo.phone && window.checkoutFormInfo.phone.length) {
+                if (window.checkoutFormInfo.shipping.phone && window.checkoutFormInfo.shipping.phone.length) {
                     payerData.phone = {
                         phone_type: "HOME",
                         phone_number: {
-                            national_number: window.checkoutFormInfo.phone.replace(/[^0-9]+/g, '')
+                            national_number: window.checkoutFormInfo.shipping.phone.replace(/[^0-9]+/g, '')
                         },
                     }
                 }
@@ -103,30 +103,6 @@
                     purchase_units: purchaseUnits,
                     payer: payerData,
                     application_context: applicationContext
-                }
-                let orderD = {
-                    purchase_units: [{
-                        amount: {
-                        value: (window.checkoutFormInfo.subtotal - window.checkoutFormInfo.discount + window.checkoutFormInfo.shipping_fee).toFixed(2),
-                        currency_code: 'USD',
-                        breakdown: {
-                            item_total: {value: (window.checkoutFormInfo.subtotal - window.checkoutFormInfo.discount).toFixed(2), currency_code: 'USD'},
-                            shipping: { value: window.checkoutFormInfo.shipping_fee, currency_code: "USD"}
-                        }
-                        },
-                        shipping: {
-                            name: {
-                                "full_name": window.checkoutFormInfo.first_name + ' ' + window.checkoutFormInfo.last_name
-                            },
-                            address: {
-                                "address_line_1": window.checkoutFormInfo.address_1,
-                                "admin_area_2": window.checkoutFormInfo.city,
-                                "postal_code": window.checkoutFormInfo.postcode,
-                                "country_code": window.checkoutFormInfo.country
-                            }
-                        },
-                        application_context: applicationContext
-                    }]
                 }
                 console.log(window.orderData);
                 return actions.order.create(window.orderData);

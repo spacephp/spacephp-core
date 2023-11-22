@@ -188,12 +188,21 @@ function random_string($length = 10) {
     return $randomString;
 }
 
-function get_string_between($str, $str1, $str2, $deep = 1)
+function get_string_between($str, $start, $end, $deep = 1)
 {
-    $str = explode($str1, $str);
-    if (count($str) == 1) return '';
-    $str = explode($str2, $str[$deep]);
-    return $str[0];
+    $matches = get_strings_between($str, $start, $end);
+    if (! isset($matches[$deep - 1])) {
+        return '';
+    }
+    return $matches[$deep - 1];
+}
+
+function get_strings_between($str, $start, $end) {
+    $matches = [];
+    $pattern = '/' . preg_quote($start, '/') . '(.*?)' . preg_quote($end, '/') . '/';
+    preg_match_all($pattern, $str, $matches);
+
+    return $matches[1]; // Return the captured strings
 }
 
 function valid_url($url)
@@ -206,5 +215,6 @@ function minimize_css($css){
     $css = preg_replace('/\s{2,}/', ' ', $css);
     $css = preg_replace('/\s*([:;{}])\s*/', '$1', $css);
     $css = preg_replace('/;}/', '}', $css);
+    $css = preg_replace('/,\s/', ',', $css);
     return $css;
 }
