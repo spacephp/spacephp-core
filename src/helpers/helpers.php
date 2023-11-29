@@ -147,7 +147,9 @@ function site_url() {
 
 // string
 function is_json($string) {
-    json_decode($string);
+    if (is_numeric($string)) return false;
+    $response = json_decode($string);
+    if (! $response) return false;
     return json_last_error() === JSON_ERROR_NONE;
 }
 
@@ -190,11 +192,11 @@ function random_string($length = 10) {
 
 function get_string_between($str, $start, $end, $deep = 1)
 {
-    $matches = get_strings_between($str, $start, $end);
-    if (! isset($matches[$deep - 1])) {
+    $str = explode($start, $str);
+    if (! isset($str[$deep - 1])) {
         return '';
     }
-    return $matches[$deep - 1];
+    return $str[$deep - 1];
 }
 
 function get_strings_between($str, $start, $end) {

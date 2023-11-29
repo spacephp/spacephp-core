@@ -17,6 +17,10 @@ class Mail {
 		$this->from_name = $from_name;
 	}
 
+	public function addBcc($mail) {
+		$this->bcc = $mail;
+	}
+
 	public function send() {
 		$mail = new PHPMailer(true);
 		$mail->isSMTP();
@@ -53,47 +57,5 @@ class Mail {
 		}
 		$mail->smtpClose();
 		return ['success' => $success, 'message' => $message];
-	}
-
-	public function addBcc($mail) {
-		$this->bcc = $mail;
-	}
-
-	public static function sendTrackingLink($site, $order) {
-		$mail = new Mail(
-			$site->mail_host, 
-			$site->mail_username, 
-			$site->mail_password, 
-			$site->mail_port
-		);
-		$mail->setSender($site->mail_from_address, $site->mail_from_name);
-
-		$mail->receiver_email = $order->getEmail();
-		$mail->receiver_name = $order->getShippingFullName();
-		$mail->subject = 'Your USPS Order Tracking Information';
-		$mail->body = get_ob(function () use ($order, $site) {
-			_view('mail/tracking-link', compact('order', 'site'));
-		});
-		return $mail->send();
-	}
-
-	public static function orderConfirm($site, $order) {
-		$mail = new Mail(
-			$site->mail_host, 
-			$site->mail_username, 
-			$site->mail_password, 
-			$site->mail_port
-		);
-		$mail->setSender($site->mail_from_address, $site->mail_from_name);
-		$cart = $order->cart();
-		$cart->getStatistic();
-		$mail->receiver_email = $order->getEmail();
-		$mail->receiver_name = $order->getShippingFullName();
-		$mail->subject = 'Thank You for Shopping with ' . $site->site_name . ' - Order #' . $order->getTransactionId() . ' - Total Amount: US$' . $order->getTotal();
-		$mail->body = get_ob(function () use ($site, $order, $cart) {
-			_view('mail/order-confirmation', compact('site', 'order', 'cart'));
-		});
-		$mail->addBcc("nhathq.dn@gmail.com");
-		return $mail->send();
 	}
 }
