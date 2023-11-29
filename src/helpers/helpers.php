@@ -193,10 +193,12 @@ function random_string($length = 10) {
 function get_string_between($str, $start, $end, $deep = 1)
 {
     $str = explode($start, $str);
-    if (! isset($str[$deep - 1])) {
+    if (! isset($str[$deep])) {
         return '';
     }
-    return $str[$deep - 1];
+    $str = explode($end, $str[$deep]);
+    if (! isset($str[1])) return '';
+    return $str[0];
 }
 
 function get_strings_between($str, $start, $end) {
