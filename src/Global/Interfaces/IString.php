@@ -1,5 +1,5 @@
 <?php
-namespace Illumiate\Global\Interfaces;
+namespace Illuminate\Global\Interfaces;
 
 interface IString {
 	public static function getStringBetween($str, $start, $end, $deep = 1);

@@ -1,5 +1,5 @@
 <?php
-namespace Illumiate\Global\Interfaces;
+namespace Illuminate\Global\Interfaces;
 
 interface IHelpers {
 	public static function debugSetting($debug = false);
