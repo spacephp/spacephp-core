@@ -1,5 +1,5 @@
 <?php
-namespace Illumiate\Global\Interfaces;
+namespace Illuminate\Global\Interfaces;
 
 interface IServer {
 	public static function getProtocol();

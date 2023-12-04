@@ -4,35 +4,35 @@ use Illuminate\Global\Helpers;
 use Illuminate\Global\View;
 use Illuminate\Global\Str;
 use Illuminate\Global\Client;
-use Illuminate\Glocal\Server;
+use Illuminate\Global\Server;
 
-$debug_setting=fn($debug = false)=>Helpers::debugSetting($debug);
-$timeout_setting=fn()=>Helpers::timeoutSetting();
-$gg=fn($var, $die = true)=>Helpers::gg($var, $die);
-$get_ob=fn($callback, $params = [])=>Helpers::getOb($callback, $params);
+function debug_setting($debug = false){Helpers::debugSetting($debug);}
+function timeout_setting(){Helpers::timeoutSetting();}
+function gg($var, $die = true){Helpers::gg($var, $die);}
+function get_ob($callback, $params = []){Helpers::getOb($callback, $params);}
 // view
-$_404=fn()=>View::_404();
-$goback=fn()=>View::goBack();
-$_view=fn($name, $args = [])=>View::load($name, $args);
-$_view_partial=fn($name, $args = [])=>View::partial($name, $args);
+function _404(){View::_404();}
+function goback(){View::goBack();}
+function _view($name, $args = []){View::load($name, $args);}
+function _view_partial($name, $args = []){View::partial($name, $args);}
 // client
-$get_user_ip=fn()=>Client::getUserIp();
-$get_user_agent=fn()=>Client::getUserAgent();
-$is_mobile=fn()=>Client::isMobile();
+function get_user_ip(){Client::getUserIp();}
+function get_user_agent(){Client::getUserAgent();}
+function is_mobile(){Client::isMobile();}
 // server
-$get_protocol=fn()=>Server::getPrototol();
-$host_name=fn()=>Server::hostName();
-$site_url=fn()=>Server::siteUrl();
+function get_protocol(){Server::getPrototol();}
+function host_name() { Server::hostName();}
+function site_url(){Server::siteUrl();}
 // string
-$is_json=fn($str, $associative = null)=>Str::isJson($str, $associative);
-$slugify=fn($text, string $divider = '-')=>Str::slugify($text, $divider);
-$random_string=fn($length = 10)=>Str::random($length);
-$get_string_between=fn($str, $start, $end, $deep = 1)=>Str::getStringBetween($str, $start, $end, $deep);
-$get_strings_between=fn($str, $start, $end)=>Str::getStringsBetween($str, $start, $end);
-$valid_url=fn($url)=>Str::validUrl($url);
+function is_json($str, $associative = null){Str::isJson($str, $associative);}
+function slugify($text, string $divider = '-'){Str::slugify($text, $divider);}
+function random_string($length = 10){Str::random($length);}
+function get_string_between($str, $start, $end, $deep = 1){Str::getStringBetween($str, $start, $end, $deep);}
+function get_strings_between($str, $start, $end){Str::getStringsBetween($str, $start, $end);}
+function valid_url($url){Str::validUrl($url);}
 // predecated
-$__post=fn($key, $default = '')=>isset($_POST[$key]) ? $_POST[$key] : $default;
-$__cookie=fn($key, $default = '')=>isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
-$__server=fn($key, $default = '')=>isset($_SERVER[$key]) ? $_SERVER[$key] : $default;
-$__get=fn($key, $default = '')=>isset($_GET[$key]) ? $_GET[$key] : $default;
-$__session=fn($key, $default = '')=>isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+function __post($key, $default = ''){isset($_POST[$key]) ? $_POST[$key] : $default;}
+function __cookie($key, $default = ''){isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;}
+function __server($key, $default = ''){isset($_SERVER[$key]) ? $_SERVER[$key] : $default;}
+function __get($key, $default = ''){isset($_GET[$key]) ? $_GET[$key] : $default;}
+function __session($key, $default = ''){isset($_SESSION[$key]) ? $_SESSION[$key] : $default;}
