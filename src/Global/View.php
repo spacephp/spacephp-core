@@ -4,7 +4,7 @@ namespace Illuminate\Global;
 use Illuminate\Global\Interfaces\IView;
 
 class View implements IView {
-	public static function load($name, $args = [])) {
+	public static function load($name, $args = []) {
 		if (! defined('VIEW_FOLDER')) {
 			define('VIEW_FOLDER', $_SERVER['DOCUMENT_ROOT'] . '/../views');
 		}
