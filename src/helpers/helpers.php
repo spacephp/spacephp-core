@@ -9,27 +9,27 @@ use Illuminate\Global\Server;
 function debug_setting($debug = false){Helpers::debugSetting($debug);}
 function timeout_setting(){Helpers::timeoutSetting();}
 function gg($var, $die = true){Helpers::gg($var, $die);}
-function get_ob($callback, $params = []){Helpers::getOb($callback, $params);}
+function get_ob($callback, $params = []){return Helpers::getOb($callback, $params);}
 // view
 function _404(){View::_404();}
 function goback(){View::goBack();}
 function _view($name, $args = []){View::load($name, $args);}
 function _view_partial($name, $args = []){View::partial($name, $args);}
 // client
-function get_user_ip(){Client::getUserIp();}
-function get_user_agent(){Client::getUserAgent();}
-function is_mobile(){Client::isMobile();}
+function get_user_ip(){return Client::getUserIp();}
+function get_user_agent(){return Client::getUserAgent();}
+function is_mobile(){return Client::isMobile();}
 // server
-function get_protocol(){Server::getPrototol();}
-function host_name() { Server::hostName();}
-function site_url(){Server::siteUrl();}
+function get_protocol(){Sreturn erver::getPrototol();}
+function host_name() {return Server::hostName();}
+function site_url(){return Server::siteUrl();}
 // string
-function is_json($str, $associative = null){Str::isJson($str, $associative);}
-function slugify($text, string $divider = '-'){Str::slugify($text, $divider);}
-function random_string($length = 10){Str::random($length);}
-function get_string_between($str, $start, $end, $deep = 1){Str::getStringBetween($str, $start, $end, $deep);}
-function get_strings_between($str, $start, $end){Str::getStringsBetween($str, $start, $end);}
-function valid_url($url){Str::validUrl($url);}
+function is_json($str, $associative = null){return Str::isJson($str, $associative);}
+function slugify($text, string $divider = '-'){return Str::slugify($text, $divider);}
+function random_string($length = 10){return Str::random($length);}
+function get_string_between($str, $start, $end, $deep = 1){return Str::getStringBetween($str, $start, $end, $deep);}
+function get_strings_between($str, $start, $end){return Str::getStringsBetween($str, $start, $end);}
+function valid_url($url){return Str::validUrl($url);}
 // predecated
 function __post($key, $default = ''){isset($_POST[$key]) ? $_POST[$key] : $default;}
 function __cookie($key, $default = ''){isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;}
