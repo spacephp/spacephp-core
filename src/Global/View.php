@@ -1,7 +1,7 @@
 <?php
 namespace Illuminate\Global;
 
-use Illumiate\Global\Interfaces\IView;
+use Illuminate\Global\Interfaces\IView;
 
 class View implements IView {
 	public static function load($name, $args = [])) {

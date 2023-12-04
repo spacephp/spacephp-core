@@ -1,7 +1,7 @@
 <?php
 namespace Illuminate\Global;
 
-use Illumiate\Global\Interfaces\IHelpers;
+use Illuminate\Global\Interfaces\IHelpers;
 
 class Helpers implements IHelpers {
 	public static function debugSetting($debug = false) {
