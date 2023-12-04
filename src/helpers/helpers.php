@@ -31,8 +31,8 @@ function get_string_between($str, $start, $end, $deep = 1){return Str::getString
 function get_strings_between($str, $start, $end){return Str::getStringsBetween($str, $start, $end);}
 function valid_url($url){return Str::validUrl($url);}
 // predecated
-function __post($key, $default = ''){isset($_POST[$key]) ? $_POST[$key] : $default;}
-function __cookie($key, $default = ''){isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;}
-function __server($key, $default = ''){isset($_SERVER[$key]) ? $_SERVER[$key] : $default;}
-function __get($key, $default = ''){isset($_GET[$key]) ? $_GET[$key] : $default;}
-function __session($key, $default = ''){isset($_SESSION[$key]) ? $_SESSION[$key] : $default;}
+function __post($key, $default = ''){return isset($_POST[$key]) ? $_POST[$key] : $default;}
+function __cookie($key, $default = ''){return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;}
+function __server($key, $default = ''){return isset($_SERVER[$key]) ? $_SERVER[$key] : $default;}
+function __get($key, $default = ''){return isset($_GET[$key]) ? $_GET[$key] : $default;}
+function __session($key, $default = ''){return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;}
