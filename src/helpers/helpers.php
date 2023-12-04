@@ -20,7 +20,7 @@ function get_user_ip(){return Client::getUserIp();}
 function get_user_agent(){return Client::getUserAgent();}
 function is_mobile(){return Client::isMobile();}
 // server
-function get_protocol(){Sreturn erver::getPrototol();}
+function get_protocol(){return Server::getPrototol();}
 function host_name() {return Server::hostName();}
 function site_url(){return Server::siteUrl();}
 // string
