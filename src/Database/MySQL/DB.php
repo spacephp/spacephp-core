@@ -74,7 +74,7 @@ class DB extends MySQL {
 }
 
 abstract class MySQL {
-    protected $mysqli;
+    public $mysqli;
 
     protected function __construct($host, $user, $password, $name)
   	{
