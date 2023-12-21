@@ -68,4 +68,10 @@ class Str implements IString {
         }
         return $randomString;
 	}
+    
+    public static function base31Encode($str) {
+        $md5Hash = md5($str);
+        $value = base_convert($md5Hash, 16, 31);
+        return $value;
+    }
 }

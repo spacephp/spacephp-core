@@ -30,6 +30,7 @@ function random_string($length = 10){return Str::random($length);}
 function get_string_between($str, $start, $end, $deep = 1){return Str::getStringBetween($str, $start, $end, $deep);}
 function get_strings_between($str, $start, $end){return Str::getStringsBetween($str, $start, $end);}
 function valid_url($url){return Str::validUrl($url);}
+function base31_encode($str){return Str::base31Encode($str);}
 // predecated
 function __post($key, $default = ''){return isset($_POST[$key]) ? $_POST[$key] : $default;}
 function __cookie($key, $default = ''){return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;}
