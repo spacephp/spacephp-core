@@ -19,7 +19,7 @@ class Response {
                 break;
         }
         echo json_encode($data);
-        die(Request::get('debug')?microtime(true)-START:'');
+        die();
     }
     
     public static function xml($content) {
