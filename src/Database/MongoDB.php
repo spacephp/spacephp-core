@@ -13,7 +13,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
 		$doc = $collection->findOne($filter);
 		if (! $doc) return null;
         $doc['_id'] = strval($doc['_id']);
-		return (array) $doc;
+		return MongoDB::parseArray($doc);
     }
 
     public function paginate($database, $collectionName, $limit, $filter = [], $options = []) {
@@ -26,6 +26,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
 		$docs = iterator_to_array($cursor);
         foreach ($docs as $key => $doc) {
             $docs[$key]['_id'] = strval($doc['_id']);
+            $docs[$key] = MongoDB::parseArray($docs[$key]);
         }
 		return [
 			'docs' => $docs,
@@ -42,6 +43,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
 		$docs = iterator_to_array($cursor);
         foreach ($docs as $key => $doc) {
             $docs[$key]['_id'] = strval($doc['_id']);
+            $docs[$key] = MongoDB::parseArray($docs[$key]);
         }
 		return $docs;
     } 
@@ -89,6 +91,15 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
 		return $result->getDeletedCount();
     }
 
+    private static function parseArray($doc) {
+        $doc = (array) $doc;
+        foreach ($doc as $key => $value) {
+            if (is_object($value) || is_array($value)) {
+                $doc[$key] = MongoDB::parseArray($value);
+            }
+        }
+        return $doc;
+    }
     // helper
 	protected function formatId($id) {
 		if ($id instanceof \MongoDB\BSON\ObjectID) {
