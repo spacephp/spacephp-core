@@ -1,7 +1,9 @@
 <?php
 namespace Illuminate\Database;
 
-class MongoDB extends MongoDBAbstract {
+use Illuminate\Database\Interfaces\IDatabase;
+
+class MongoDB extends MongoDBAbstract implements IDatabase {
     public function find($database, $collectionName, $id) {
         return $this->findWhere($database, $collectionName, ['_id' => $this->formatId($id)]);
     }
