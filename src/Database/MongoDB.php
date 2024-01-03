@@ -92,13 +92,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
     }
 
     private static function parseArray($doc) {
-        $doc = (array) $doc;
-        foreach ($doc as $key => $value) {
-            if (is_object($value) || is_array($value)) {
-                $doc[$key] = MongoDB::parseArray($value);
-            }
-        }
-        return $doc;
+        return json_decode(json_encode($doc), true);
     }
     // helper
 	protected function formatId($id) {
