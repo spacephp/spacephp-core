@@ -1,7 +1,7 @@
 <?php
-namespace Illuminate\Database;
+namespace Illuminate\Database\MongoDB;
 
-use Illuminate\Database\Interfaces\IDatabase;
+use Illuminate\Database\MongoDB\Interfaces\IDatabase;
 
 class MongoDB extends MongoDBAbstract implements IDatabase {
     public function find($database, $collectionName, $id) {

@@ -59,7 +59,8 @@ class Request {
     }
 
     public static function isXhr() {
-        if (strtolower(__server('CONTENT_TYPE')) != 'application/json') return false;
+        if (! isset($_SERVER['CONTENT_TYPE'])) return false;
+        if (strtolower($_SERVER['CONTENT_TYPE']) != 'application/json') return false;
         return true;
     }
 
@@ -73,15 +74,16 @@ class Request {
     }
 
     public static function method() {
-        switch (__server('REQUEST_METHOD')) {
+        if (! isset($_SERVER['REQUEST_METHOD'])) return 'GET';
+        switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 return 'GET';
             case 'POST':
-                if (Request::post('_method') == 'DELETE') {
+                if ($_GET['_method'] == 'DELETE') {
                     #unset($_POST['_method']);
                     return 'DELETE';
                 }
-                if (Request::post('_method') == 'PUT') {
+                if ($_GET['_method'] == 'PUT') {
                     #unset($_POST['_method']);
                     return 'PUT';
                 }
@@ -91,11 +93,11 @@ class Request {
             case 'DELETE':
                 return 'DELETE';
         }
-        return 'POST';
+        return 'GET';
     }
 
     public static function isMobile() {
-        if (Request::get('m') == 1) return true;
+        if (isset($_GET['m']) && $_GET['m'] == 1) return true;
         return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", get_user_agent());
     }
 
