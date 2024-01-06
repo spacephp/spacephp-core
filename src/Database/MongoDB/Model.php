@@ -1,5 +1,5 @@
 <?php
-namespace Illumiate\Database\MongoDB;
+namespace Illuminate\Database\MongoDB;
 
 use Illuminate\Database\MongoDB;
 use Illuminate\Database\NCrypt;

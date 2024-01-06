@@ -1,5 +1,5 @@
 <?php
-namespace Illumiate\Database\MongoDB\Interfaces;
+namespace Illuminate\Database\MongoDB\Interfaces;
 
 interface IModel {
     public static function find($id);
