@@ -1,165 +1,242 @@
 <?php
-namespace Illuminate\Database\MongoDB;
+namespace Illumiate\Database\MongoDB;
 
-class Model {
-    public static $database = 'microservices';
-    public static $cache = false;
+use Illuminate\Database\MongoDB;
+use Illuminate\Database\NCrypt;
+use Illuminate\Datbase\MongoDB\Interfaces\IModel;
+
+class Model implements IModel {
+    public $_id;
+    protected static $encrypt = [];
+    protected static $encrypt_secret_key = MONGO_SEED;
 
     function __construct($data = []) {
-        foreach ($data as $key => $value) {
-            $this->{$key} = $value;
+        if (empty($data)) return;
+        $data = $this->decrypt($data);
+        $this->_id = $data['_id'];
+        $this->map($data);
+        if (property_exists($this, 'site_id')) {
+            $this->site_id      = isset($data['site_id'])?$data['site_id']:'';
         }
-        if (isset($data['_id'])) {
-            $this->_id = strval($data['_id']);
+        if (property_exists($this, 'ip')) {
+            $this->ip      = isset($data['ip'])?$data['ip']:'';
+        }
+        if (property_exists($this, 'user_agent')) {
+            $this->user_agent      = isset($data['user_agent'])?$data['user_agent']:'';
+        }
+        if (property_exists($this, 'updated_at')) {
+            $this->updated_at      = isset($data['updated_at'])?$data['updated_at']:'';
+        }
+        if (property_exists($this, 'created_at')) {
+            $this->created_at      = isset($data['created_at'])?$data['created_at']:'';
         }
     }
 
-    public function getKey($key, $default = '') {
-        if (! isset($this->{$key}) || ! $this->{$key}) return $default;
-        return $this->{$key};
-    }
-
-    public static function has($key) {
-        $model = get_called_class();
-        if (in_array($key, $model::$fields)) return true;
-        return false;
-    }
-
-    public static function find($filter, $cache = true) {
+    public static function paginate($limit, $filter = [], $options = []) {
         $class = get_called_class();
-        if ($class::$cache && $cache) {
-            $file = $class::generateCacheFile($filter);
-            if (! file_exists(CACHE_DIR . $file) || isset($_GET['cache'])) {
-                $result = DB::find($class::$database, $class::$collection, $filter);
-                if (isset($result['_id'])) {
-                    $result['_id'] = strval($result['_id']);
-                }
-                file_put_contents(CACHE_DIR . $file, json_encode($result));
-            }
-            $result = json_decode(file_get_contents(CACHE_DIR . $file), true);
-        } else {
-            $result = DB::find($class::$database, $class::$collection, $filter);
+        $result = MongoDB::connect()->paginate($class::$database, $class::$collection, $limit, $filter, $options);
+        foreach ($result['docs'] as $key => $value) {
+            $result['docs'][$key] = new $class($value);
         }
-        if (! $result) return false;
+        return $result;
+    }
+
+    public static function all($filter = [], $options = []) {
+        $class = get_called_class();
+        $result = MongoDB::connect()->all($class::$database, $class::$collection, $filter, $options);
+        foreach ($result as $key => $value) {
+            $result[$key] = new $class($value);
+        }
+        return $result;
+    }
+
+    public static function find($id) {
+        $class = get_called_class();
+        $result = MongoDB::connect()->findWhere($class::$database, $class::$collection, ['_id' => $class::formatId($id)]);
+        if (empty($result)) return null;
         return new $class($result);
     }
 
-    public static function insert($data) {
+    public static function findWhere($filter) {
         $class = get_called_class();
-        if ($class::has('host')) {
-            $data['host'] = host_name();
+        $result = MongoDB::connect()->findWhere($class::$database, $class::$collection, $filter);
+        if (empty($result)) {
+            return null;
         }
-        if ($class::has('ip')) {
+        return new $class($result);
+    }
+
+    public static function create($data) {
+        $class = get_called_class();
+        
+        if (property_exists($class, 'ip')) {
             $data['ip'] = get_user_ip();
         }
-        if ($class::has('user_agent')) {
+        if (property_exists($class, 'user_agent')) {
             $data['user_agent'] = get_user_agent();
         }
-        if ($class::has('post_id')) {
-            $data['post_id'] = md5('Illuminate_' . __post('url'));
+        if (property_exists($class, 'site_id')) {
+            $site = Site::current();
+            $data['site_id'] = $site->_id;
+            $data['site'] = Model::getSiteCode(host_name());
         }
-        unset($data['_method']);
-        unset($data['files']);
-        $result = DB::insert($class::$database, $class::$collection, $data);
-        if (! $result) return false;
-        return strval($result);
+        if (property_exists($class, 'updated_at')) {
+            $data['updated_at'] = date('Y-m-d H:i:s', time());
+        }
+        if (property_exists($class, 'created_at')) {
+            $data['created_at'] = date('Y-m-d H:i:s', time());
+        }
+        $data = $class::encrypt($data);
+        $result = MongoDB::connect()->create($class::$database, $class::$collection, $data);
+        return new $class($result);
+    }
+    
+    private static function getSiteCode($host) {
+        $code = '';
+        $index = 0;
+        while (true) {
+            if (! isset($host[$index * 3])) {
+                break;
+            }
+            $code .= $host[$index * 3];
+            $index++;
+        }
+        return $code;
     }
 
-    public static function update($filter, $data, $option = []) {
+    public static function update($id, $data) {
         $class = get_called_class();
-        $result = DB::update($class::$database, $class::$collection, $filter, $data, $option);
-        if (! $result) return false;
-        if ($class::$cache) {
-            file_get_contents(site_url() . '?cache=true');
+        
+        if (property_exists($class, 'ip')) {
+            $data['ip'] = get_user_ip();
         }
+        if (property_exists($class, 'user_agent')) {
+            $data['user_agent'] = get_user_agent();
+        }
+        if (property_exists($class, 'site_id')) {
+            $site = Site::current();
+            $data['site_id'] = $site->_id;
+            $data['site'] = Model::getSiteCode($site->host);
+        }
+        if (property_exists($class, 'updated_at')) {
+            $data['updated_at'] = date('Y-m-d H:i:s', time());
+        }
+        $data = $class::encrypt($data);
+        $result = MongoDB::connect()->update($class::$database, $class::$collection, $id, $data);
         return new $class($result);
     }
 
-    public static function destroy($id) {
+    public static function delete($id) {
         $class = get_called_class();
-        return DB::delete($class::$database, $class::$collection, $id);
+        $model = new $class;
+        $result = MongoDB::connect()->delete($class::$database, $class::$collection, $id);
+        return $result;
     }
 
-    public static function get($perPage = 10, $filter = []) {
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
-        // Fetch documents with pagination
-        $skip = ($page - 1) * $perPage;
-        $class = get_called_class();
-        $client = DB::getClient();
-        $database = $client->selectDatabase($class::$database);
-        $collection = $database->selectCollection($class::$collection);
-        $obj = new $class;
-        if ($class::has('host')) {
-            $filter['host'] = host_name();
-        }
-        $documents = $collection->find($filter, ['skip' => $skip, 'limit' => $perPage, 'sort' => ['_id' => -1]]);
-        // Count total documents for paginatio
-        $totalDocuments = $collection->countDocuments();
-        $obj->totalPages = ceil($totalDocuments / $perPage);
-        $obj->documents = [];
-        foreach ($documents as $doc) {
-            $obj->documents[] = new $class($doc);
-        }
-        $obj->totalDocuments = count($obj->documents);
-        return $obj;
+    public function getId() {
+        return $_id;
     }
 
-    public function list() {
-        echo "<table>";
-        echo "<tr>";
-        foreach ($this->titles as $title) {
-            echo "<th>" . ucwords($title) . "</th>";
+    public function __toArray() {
+        $arr = [];
+        foreach ($this as $key => $value) {
+            if ($key == 'valid') continue;
+            $arr[$key] = $value;
         }
-        echo "<th>Actions</th>";
-        echo "</tr>";
-        foreach ($this->documents as $document) {
-            echo "<tr>";
-            foreach ($this->titles as $title) {
-                if (! isset($document[$title])) {
-                    echo '<td>-</td>';
-                } else {
-                    echo "<td>" . $document[$title] . "</td>";
+        return $arr;
+    }
+
+    protected static function encrypt($data, $encryptFields = null) {
+        $class = get_called_class();
+        if (! $encryptFields) {
+            $encryptFields = $class::$encrypt;
+        }
+        foreach ($data as $key => $value) {
+            if (valid_url($value)) {
+                $data[$key] = NCrypt::encrypt($value, $class::$encrypt_secret_key);
+                continue;
+            }
+            if (is_array($value) && in_array($key, $encryptFields) && $class::isArrayString($value)) {
+                foreach ($value as $index => $item) {
+                    $data[$key][$index] = NCrypt::encrypt($item, $class::$encrypt_secret_key);
                 }
+                continue;
             }
-            echo "<td><a href='?delete=" . $document['_id'] . "'>Delete</a></td>";
-            echo "</tr>";
+            if (is_object($value) || is_array($value)) {
+                $data[$key] = $class::encrypt((array)$value, $encryptFields);
+                continue;
+            }
+            if (! in_array($key, $encryptFields)) continue;
+            
+            $data[$key] = NCrypt::encrypt($value, $class::$encrypt_secret_key);
         }
-        echo "</table>";
+        return $data;
     }
 
-    public function links() {
-        echo '<ul class="pagination">';
-        echo '<li class="page-item disabled">';
-        echo '<a class="page-link" href="#" aria-label="Previous">';
-        echo '<span aria-hidden="true">«</span>';
-        echo '</a>';
-        echo '</li>';
-        for ($i = 1; $i <= $this->totalPages; $i++) {
-            echo '<li class="page-item"><a class="page-link active" href="?page=' . $i .'">' . $i . '</a></li>';
-        }
-        echo '<li class="page-item">';
-        echo '<a class="page-link" href="#" aria-label="Next">';
-        echo '<span aria-hidden="true">»</span>';
-        echo '</a>';
-        echo '</li>';
-        echo '</ul>';
-    }
-
-    public function title() {
-        $class = get_called_class();
-        return ucwords($class::$collection);
-    }
-
-    public static function generateCacheFile($filter) {
-        $class = get_called_class();
-        $name = $class::$database . $class::$collection;
-        if (!is_array($filter)) {
-            $name .= $filter;
-        } else {
-            foreach ($filter as $key => $value) {
-                $name .= $key . $value;
+    private static function isArrayString($arr) {
+        foreach ($arr as $element) {
+            if (!is_string($element)) {
+                return false;
             }
         }
-        return $name . '.json';
+        return true;
+    }    
+
+    protected function decrypt($data) {
+        $newData = [];
+        foreach ($data as $key => $value) {
+            if ($value == 'oieWj+EcZPW7OcmoUivOvw==') {
+                $data[$key] = '';
+                continue;
+            }
+            if (is_string($value)) {
+                if ($this->isBase64Encoded($value)) {
+                    $newData[$key] = $this->isEncrypt($value);
+                } else {
+                    $newData[$key] = $value;
+                }
+                continue;
+            }
+            if (! $value) {
+                $newData[$key] = $value;
+                continue;
+            };
+            if (is_object($value) || is_array($value)) {
+                $newData[$key] = $this->decrypt($value);
+                continue;
+            }
+            $newData[$key] = $value;
+        }
+        return $newData;
+    }
+
+    public function isValid() {
+        if (! isset($this->_id) || ! $this->_id) {
+            return false;
+        }
+        return true;
+    }
+
+    private function isEncrypt($value) {
+        $decrypt = NCrypt::decrypt($value, MONGO_SEED);
+        if (NCrypt::encrypt($decrypt, MONGO_SEED) == $value) {
+            return $decrypt;
+        }
+        return $value;
+    }
+
+    private function isBase64Encoded($string) {
+        return base64_encode(base64_decode($string, true)) === $string;
+    }
+
+    public static function formatId($id) {
+        if ($id instanceof \MongoDB\BSON\ObjectID) {
+            return $id;
+        }
+		try {
+            return new \MongoDB\BSON\ObjectID($id);
+        } catch (\Exception $e) {
+            return $id;
+        }
     }
 }
