@@ -79,11 +79,11 @@ class Request {
             case 'GET':
                 return 'GET';
             case 'POST':
-                if ($_GET['_method'] == 'DELETE') {
+                if ($_POST['_method'] == 'DELETE') {
                     #unset($_POST['_method']);
                     return 'DELETE';
                 }
-                if ($_GET['_method'] == 'PUT') {
+                if ($_POST['_method'] == 'PUT') {
                     #unset($_POST['_method']);
                     return 'PUT';
                 }
