@@ -3,7 +3,7 @@ namespace Illumiate\Database\MongoDB;
 
 use Illuminate\Database\MongoDB;
 use Illuminate\Database\NCrypt;
-use Illuminate\Datbase\MongoDB\Interfaces\IModel;
+use Illuminate\Database\MongoDB\Interfaces\IModel;
 
 class Model implements IModel {
     public $_id;
