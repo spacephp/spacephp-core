@@ -1,8 +1,7 @@
 <?php
 namespace Illuminate\Database\MongoDB;
 
-use Illuminate\Database\MongoDB;
-use Illuminate\Database\NCrypt;
+use Eclipse\NCrypt;
 use Illuminate\Database\MongoDB\Interfaces\IModel;
 
 class Model implements IModel {
