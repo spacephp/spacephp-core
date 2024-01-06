@@ -15,7 +15,7 @@ class App {
     }
 
     private static function parseEnv() {
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/../.env')) {
+        if (! file_exists($_SERVER['DOCUMENT_ROOT'] . '/../.env')) {
             die('.env file not found');
         }
         $env = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/../.env');
