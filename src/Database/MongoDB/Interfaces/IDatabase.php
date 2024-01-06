@@ -1,5 +1,5 @@
 <?php
-namespace Illuminate\Database\Interfaces;
+namespace Illuminate\Database\MongoDB\Interfaces;
 
 interface IDatabase {
     public function find($database, $collectionName, $id);
