@@ -4,8 +4,12 @@ namespace Illuminate\Database\MongoDB;
 use Illuminate\Database\MongoDB\Interfaces\IDatabase;
 
 class MongoDB extends MongoDBAbstract implements IDatabase {
+    use MongoDBInteractionTrait;
+}
+
+trait MongoDBInteractionTrait {
     public function find($database, $collectionName, $id) {
-        return $this->findWhere($database, $collectionName, ['_id' => $this->formatId($id)]);
+        return $this->findWhere($database, $collectionName, ['_id' => MongoDB::formatId($id)]);
     }
 
     public function findWhere($database, $collectionName, $filter) {
@@ -54,7 +58,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
             $collection, 
             ['_id' => 
                 [
-                    '$in' => array_map(function ($id) {return $this->formatId($id);}, $ids)
+                    '$in' => array_map(function ($id) {return MongoDB::formatId($id);}, $ids)
                 ]
             ], 
             $options
@@ -73,7 +77,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
         $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
         //$data = $this->encrypt($data);
         $updateResult = $collection->updateOne(
-            ['_id' => $this->formatId($id)],
+            ['_id' => MongoDB::formatId($id)],
             ['$set' => $data]
         );
 		return $this->find($database, $collectionName, $id);
@@ -81,7 +85,7 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
 
     public function delete($database, $collectionName, $id) {
 		$collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
-        $result = $collection->deleteOne(['_id' => $this->formatId($id)]);
+        $result = $collection->deleteOne(['_id' => MongoDB::formatId($id)]);
 		return $result->getDeletedCount();
     }
 
@@ -90,12 +94,35 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
         $result = $collection->deleteMany($filter);
 		return $result->getDeletedCount();
     }
+}
 
-    private static function parseArray($doc) {
+abstract class MongoDBAbstract {
+    protected $client = null;
+
+    protected function __construct($uri) {
+        $this->client = new \MongoDB\Client($uri . "?retryWrites=true&w=majority");
+    }
+
+    public static function connect($uri = null) {
+        global $mongodb;
+        if (! isset($mongodb)) {
+            $mongodb = [];
+        }
+        if (! $uri) {
+            $uri = MONGO_URI;
+        }
+        $slug = slugify($uri);
+        if (! isset($mongodb[$slug])) {
+            $mongodb[$slug] = new MongoDB($uri);
+        }
+        return $mongodb[$slug];
+    }
+    
+    protected static function parseArray($doc) {
         return json_decode(json_encode($doc), true);
     }
     // helper
-	protected function formatId($id) {
+	protected static function formatId($id) {
 		if ($id instanceof \MongoDB\BSON\ObjectID) {
             return $id;
         }
@@ -105,46 +132,4 @@ class MongoDB extends MongoDBAbstract implements IDatabase {
             return $id;
         }
 	}
-
-	protected function isMongoId($value) {
-        if ($value instanceof \MongoDB\BSON\ObjectID) {
-            return true;
-        }
-        try {
-            new \MongoDB\BSON\ObjectID($value);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-	}
-}
-
-abstract class MongoDBAbstract {
-    protected $secret_key;
-    protected $client = null;
-    protected static $uris = [
-        'default' => MONGO_URI,
-        'sub' => MONGO_SUB
-    ];
-
-    protected function __construct($name = 'default') {
-        $this->client = new \MongoDB\Client(MongoDBAbstract::$uris[$name] . "?retryWrites=true&w=majority");
-        $this->secret_key = MONGO_SEED;
-    }
-
-    public static function setUris(array $uris) {
-        MongoDBAbstract::$uris = $uris;
-    }
-
-    public static function connect($name = 'default') {
-        global $mongodb;
-        if (! isset($mongodb)) {
-            $mongodb = [];
-        }
-        if (! isset($mongodb[$name])) {
-            $class = get_called_class();
-            $mongodb[$name] = new $class($name);
-        }
-        return $mongodb[$name];
-    }
 }
