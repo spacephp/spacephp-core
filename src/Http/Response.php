@@ -18,7 +18,7 @@ class Response {
                 header('HTTP/1.1 500 Internal Server Error');
                 break;
         }
-        echo json_encode($data);
+        echo json_encode((array) $data);
         die();
     }
     
