@@ -20,6 +20,12 @@ trait MongoDBInteractionTrait {
 		return MongoDB::parseArray($doc);
     }
 
+    public function count($database, $collectionName, $filter = []) {
+        $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
+        $count = $collection->countDocuments($filter);
+        return $count;
+    }
+
     public function paginate($database, $collectionName, $limit, $filter = [], $options = []) {
         $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
         $limit = intval($limit);

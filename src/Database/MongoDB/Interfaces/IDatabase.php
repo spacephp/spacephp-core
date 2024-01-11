@@ -6,6 +6,7 @@ interface IDatabase {
     public function findWhere($database, $collectionName, $filter);
     public function paginate($database, $collectionName, $limit, $filter = [], $options = []);
     public function all($database, $collectionName, $filter = [], $options = []);
+    public function count($database, $collectionName, $filter = []);
     public function create($database, $collectionName, $data);
     public function update($database, $collectionName, $id, $data);
     public function delete($database, $collectionName, $id);
