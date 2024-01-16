@@ -79,6 +79,7 @@ class Request {
             case 'GET':
                 return 'GET';
             case 'POST':
+                if (! isset($_POST['_method'])) return 'POST';
                 if ($_POST['_method'] == 'DELETE') {
                     #unset($_POST['_method']);
                     return 'DELETE';
