@@ -15,11 +15,13 @@ class Str implements IString {
 	}
 
 	public static function getStringsBetween($str, $start, $end) {
-        $matches = [];
-        $pattern = '/' . preg_quote($start, '/') . '(.*?)' . preg_quote($end, '/') . '/';
-        preg_match_all($pattern, $str, $matches);
-
-        return $matches[1]; // Return the captured strings
+        $matches = explode($start, $str);
+        $result = [];
+        for ($i = 1; $i < count($matches); ++$i) {
+            $match = explode($end, $matches[$i]);
+            $result[] = $match[0];
+        }
+        return $result;
 	}
 
 	public static function slugify($text, string $divider = '-') {
