@@ -10,6 +10,7 @@ class CUrl
     private $mobile = false;
     private $json_data = false;
     private $userAgent = '';
+    private $cookie = null;
     private $UA = [
         'browser' => [
             'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
@@ -62,7 +63,7 @@ class CUrl
     }
 
     public function setCookie($cookie) {
-        curl_setopt($this->curl, CURLOPT_COOKIE, $cookie);
+        $this->cookie = $cookie;
     }
 
     public function setUserAgent($userAgent)
@@ -86,7 +87,9 @@ class CUrl
 
         curl_setopt($this->curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($this->curl, CURLOPT_URL, $url);
-
+        if ($this->cookie) {
+            curl_setopt($this->curl, CURLOPT_COOKIE, $this->cookie);
+        }
         $this->userAgent();
         $this->detectSSL($url);
         if ($data) {
