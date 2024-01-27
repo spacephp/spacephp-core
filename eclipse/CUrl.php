@@ -61,6 +61,10 @@ class CUrl
         }
     }
 
+    public function setCookie($cookie) {
+        curl_setopt($this->curl, CURLOPT_COOKIE, $cookie);
+    }
+
     public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
