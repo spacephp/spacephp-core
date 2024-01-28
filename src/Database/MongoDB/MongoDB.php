@@ -79,6 +79,18 @@ trait MongoDBInteractionTrait {
 		return $this->find($database, $collectionName, $insertedId);
     }
 
+    public function createMany($database, $collectionName, $data) {
+        $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
+		$result = $collection->insertMany($data);
+		return $result;
+    }
+
+    public function replace($database, $collectionName, $filter, $data) {
+        $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
+		$result = $collection->replaceOne($filter, $data);
+		return $this->find($database, $collectionName, $insertedId);
+    }
+
     public function update($database, $collectionName, $id, $data) {
         $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
         //$data = $this->encrypt($data);
