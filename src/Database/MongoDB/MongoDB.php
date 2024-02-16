@@ -101,6 +101,16 @@ trait MongoDBInteractionTrait {
 		return $this->find($database, $collectionName, $id);
     }
 
+    public function updateMany($database, $collectionName, $filter, $data) {
+        $collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
+        //$data = $this->encrypt($data);
+        $updateResult = $collection->updateMany(
+            $filter,
+            ['$set' => $data]
+        );
+        return $updateResult;
+    }
+
     public function delete($database, $collectionName, $id) {
 		$collection = $this->client->selectDatabase($database)->selectCollection($collectionName);
         $result = $collection->deleteOne(['_id' => MongoDB::formatId($id)]);
