@@ -106,7 +106,11 @@ trait MongoDBInteractionTrait {
         //$data = $this->encrypt($data);
         $updateResult = $collection->updateMany(
             $filter,
-            ['$set' => $data]
+            ['$set' => $data],
+            [
+                'upsert' => false,
+                'multi' => true
+            ]
         );
         return $updateResult;
     }
